@@ -10,9 +10,9 @@ import javafx.stage.Stage;
 
 
 public class Main extends Application {
-    Double width;
-    Double height;
-    VBox root;
+    private Double width;
+    private Double height;
+    private VBox root;
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.getIcons().add(new Image("resources/icon.png"));

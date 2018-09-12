@@ -5,14 +5,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
-import javax.swing.text.html.StyleSheet;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Gui {
     private Double width;
@@ -29,6 +27,8 @@ public class Gui {
     private static final Integer thirdLvl = 3;
     private static final Integer fourthLvl = 4;
     private Integer dimension;
+
+    private final int lvlView = checkElementStyle();
 
 
     public Gui(Double width, Double height){
@@ -50,14 +50,12 @@ public class Gui {
         gameGrid = new GridPane();
         head.getChildren().add(gameGrid);
         gameGrid.setPrefHeight(height-(2*headerHeight+buttonsHeight)+12);
-        gameGrid.setPrefWidth(gameGrid.getPrefHeight());
+        gameGrid.setPrefWidth(width*0.9);
         gameGrid.setMaxHeight(height-(2*headerHeight+buttonsHeight)+12);
         gameGrid.setMinHeight(height-(2*headerHeight+buttonsHeight)+12);
         exitButtons = new HBox();
         exitButtons.setPrefHeight(headerHeight);
         root.getChildren().add(0,headerBox);
-//        root.getChildren().add(1,complexityButtons);
-//        root.getChildren().add(2,gameGrid);
         root.getChildren().add(1,head);
         root.getChildren().add(2,exitButtons);
     }
@@ -73,7 +71,6 @@ public class Gui {
         exitButtons.setId("exit");
         root.getStylesheets().addAll(this.getClass().getResource("/style/style.css").toExternalForm());
         Font font = Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),18);
-        //complexityButtons.setId("exit");
         try {
             Field f = Font.class.getDeclaredField("DEFAULT");
             f.setAccessible(true);
@@ -87,21 +84,21 @@ public class Gui {
     public void setComplexityButtons(){
         Label labelComplexity = new Label("Выберите класс:");
         labelComplexity.setTextFill(Color.WHITE);
-
-
-        System.out.println(labelComplexity.getFont());
+        //labelComplexity.setAlignment(Pos.CENTER);
         choiseComplexity = new ChoiceBox<>(FXCollections.observableArrayList(firstLvl.toString(), secondLvl.toString(),thirdLvl.toString(),fourthLvl.toString()));
-        //choiseComplexity
         complexityButtons.setSpacing(15);
         complexityButtons.getChildren().add(labelComplexity);
         complexityButtons.getChildren().add(choiseComplexity);
+        complexityButtons.setAlignment(Pos.CENTER_LEFT);
+
         choiseComplexity.setOnAction(event -> {
             gameGrid.getChildren().clear();
             gameGrid.getColumnConstraints().clear();
             gameGrid.getRowConstraints().clear();
-            Integer complexity = Integer.parseInt(choiseComplexity.getValue());
-            if(complexity == firstLvl || complexity == secondLvl) dimension = 4;
-            else if(complexity == thirdLvl || complexity == fourthLvl) dimension = 10;
+//            Integer complexity = Integer.parseInt(choiseComplexity.getValue());
+//            if(complexity == firstLvl || complexity == secondLvl) dimension = 4;
+//            else if(complexity == thirdLvl || complexity == fourthLvl) dimension = 10;
+            dimension = 4;
             drawTask(dimension);
         });
     }
@@ -143,15 +140,6 @@ public class Gui {
         return true;
     }
 
-    private boolean checkColumn(List<Element> list, int column) {
-        for (int i = 0; i < dimension; ++i) {
-            if (list.get(i + dimension * column).isRotated()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     private boolean checkRow(List<Element> list, int row) {
         for (int i = 0; i < dimension; ++i) {
             if (!list.get(row + dimension * i).isRotated()) {
@@ -161,11 +149,20 @@ public class Gui {
         return true;
     }
 
-    private void addColumn(List<Integer> ids, int column) {
-        for (int i = 0; i < dimension; ++i) {
-            ids.add(i + dimension * column);
-        }
-    }
+//    private boolean checkColumn(List<Element> list, int column) {
+//        for (int i = 0; i < dimension; ++i) {
+//            if (list.get(i + dimension * column).isRotated()) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//
+//    private void addColumn(List<Integer> ids, int column) {
+//        for (int i = 0; i < dimension; ++i) {
+//            ids.add(i + dimension * column);
+//        }
+//    }
 
     private void addRow(List<Integer> ids, int row) {
         for (int i = 0; i < dimension; ++i) {
@@ -176,7 +173,7 @@ public class Gui {
     private List<Integer> getRedStoneLight(List<Element> list) {
         List<Integer> ids = new ArrayList<>();
         for (int i = 0; i < dimension; ++i) {
-            if (checkColumn(list, i))addColumn(ids, i);
+           // if (checkColumn(list, i))addColumn(ids, i);
             if(checkRow(list,i)) addRow(ids,i);
         }
         return ids;
@@ -190,14 +187,15 @@ public class Gui {
             double columnWidth = gameGrid.getPrefWidth() / dimension;
             gameGrid.getRowConstraints().add(new RowConstraints(rowHeight));
             gameGrid.getColumnConstraints().add(new ColumnConstraints(columnWidth));
-            for(int j=0; j < dimension; j++) {
-                Element item = new Element(i,j,false,false);
+
+            for(int j = 0; j < dimension; j++) {
+                Element item = new Element(i,j,false,false,lvlView);
                 item.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-5);
                 item.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-5);
                 item.getImageButton().setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
                 item.getImageButton().setBackground(Background.EMPTY);
                 gameGrid.add(item.getImageButton(),i,j);
-                gameGrid.setMargin(item.getImageButton(), new Insets(0));
+                gameGrid.setMargin(item.getImageButton(), new Insets(5));
                 items.add(item);
 
             }
@@ -210,18 +208,19 @@ public class Gui {
         gameGrid.getChildren().clear();
         gameGrid.getColumnConstraints().clear();
         gameGrid.getRowConstraints().clear();
-        // gameGrid.setGridLinesVisible(true);
         for(Element el:items){
-            el.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-5);
-            el.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-5);
+            el.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-15);
+            el.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-15);
             el.getImageButton().setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
             el.getImageButton().setBackground(Background.EMPTY);
             gameGrid.add(el.getImageButton(),el.getColumn(),el.getRow());
         }
     }
 
-
-
-
+    public int checkElementStyle(){
+        Random ra = new Random();
+        if (ra.nextInt()%2 == 0)return 0;
+        else return 1;
+    }
 }
  

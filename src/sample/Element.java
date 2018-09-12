@@ -15,23 +15,32 @@ public class Element{
     private boolean rotated;
     private int column;
     private int row;
+    private int lvlView;
 
-    public Element( int column, int row, boolean activity, boolean rotated){
+    public Element( int column, int row, boolean activity, boolean rotated, int lvlView){
         this.activity = activity;
         this.column = column;
         this.rotated = rotated;
         this.row = row;
+        this.lvlView = lvlView;
         checkElement();
     }
 
     public void checkElement(){
         view = new ImageView();
         Image im;
-        if(!activity){
-            im = new Image("resources/rails.png");
-        }
-        else {
-            im = new Image("resources/rails.png");
+        if(lvlView == 0) {
+            if (!activity) {
+                im = new Image("resources/rails.png");
+            } else {
+                im = new Image("resources/activeRails.gif");
+            }
+        } else{
+            if (!activity) {
+                im = new Image("resources/red.png");
+            } else {
+                im = new Image("resources/redA.png");
+            }
         }
         view.setImage(im);
         imageButton.setGraphic(view);
