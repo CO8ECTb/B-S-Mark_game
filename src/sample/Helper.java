@@ -14,6 +14,7 @@ package sample;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class Helper {
     // only for fixed dimensions
@@ -95,7 +96,7 @@ public class Helper {
         return -1;
     }
 
-    public List<Integer> GenField(int sideSize, int difficulty) {
+    public List<Integer> GenField(int sideSize, int difficulty, int seed) {
         final int fieldSize = sideSize * sideSize;
         final int maxDifficulty = fieldSize + 1;
         if (difficulty > maxDifficulty) {
@@ -111,13 +112,19 @@ public class Helper {
             InitDistribution(sideSize);
         }
 
-        int resultedMask = 0;
+        List<Integer> resultedMasks = new ArrayList<>();
         for (int i = 0; i < fieldSize; ++i) {
             if (distribution[i] == difficulty) {
-                resultedMask = i;
-                break;
+                resultedMasks.add(i);
             }
         }
+        if (resultedMasks.isEmpty()) {
+            resultedMasks.add(0);
+        }
+
+        Random gen = new Random(seed);
+        int resultedMaskIdx = gen.nextInt(resultedMasks.size());
+        int resultedMask = resultedMasks.get(resultedMaskIdx);
 
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < fieldSize; ++i) {
