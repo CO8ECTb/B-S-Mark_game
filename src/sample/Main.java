@@ -15,11 +15,13 @@ public class Main extends Application {
     private VBox root;
     @Override
     public void start(Stage primaryStage) throws Exception{
-        if (SaveMaker.testSaveMaker()) {
+        if (SaveMaker.TestSaveMaker()) {
             System.out.println("Success!");
         } else {
             System.out.println("Fail!");
         }
+
+        Helper.TestGetTip();
 
         primaryStage.getIcons().add(new Image("resources/icon.png"));
         width = Screen.getPrimary().getBounds().getWidth()*0.4;

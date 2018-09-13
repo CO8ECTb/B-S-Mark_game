@@ -4,11 +4,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaveMaker {
-    private static String SAVE_FOLDER = new File("saves").toString();
-    private static int MAX_SAVE_LEN = 4096;
+// 1 = -- (rotated)
+// 0 = | (not rotated)
 
-    public static void initSaveDirIfNeed() {
+public class SaveMaker {
+    private final static String SAVE_FOLDER = new File("saves").toString();
+    private final static int MAX_SAVE_LEN = 4096;
+
+    public static void InitSaveDirIfNeed() {
         File saveDir = new File(SAVE_FOLDER);
         if (!saveDir.exists()) {
             saveDir.mkdirs();
@@ -16,7 +19,7 @@ public class SaveMaker {
     }
 
     public static List<Integer> ReadDataFromFile(String filename) {
-        initSaveDirIfNeed();
+        InitSaveDirIfNeed();
 
         File file = new File(SAVE_FOLDER, filename.concat(".sav"));
 //        System.out.println("FilePath is: " + file);
@@ -74,7 +77,7 @@ public class SaveMaker {
     }
 
     public static boolean WriteDataToFile(List<Integer> field, Integer style, String filename) {
-        initSaveDirIfNeed();
+        InitSaveDirIfNeed();
 
         File file = new File(SAVE_FOLDER, filename.concat(".sav"));
 //        System.out.println("FilePath save is: " + file);
@@ -133,7 +136,7 @@ public class SaveMaker {
     }
 
 
-    public static boolean testSaveMaker() {
+    public static boolean TestSaveMaker() {
         // gen data
         int sideSize = 4;
         List<Integer> field = new ArrayList<>();
