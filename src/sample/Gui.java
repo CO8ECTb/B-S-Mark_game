@@ -12,21 +12,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Gui {
+ class Gui {
     private Double width;
     private Double height;
     private Double headerHeight,buttonsHeight;
-    private VBox root, head;
-    private HBox complexityButtons, headerBox;
-    private GridPane gameGrid;
+    private VBox root, body;
+    private HBox headerBox;
+    private GridPane gameGrid, buttonsGrid;
     private HBox exitButtons;
-    private ChoiceBox<String> choiseComplexity;
+    private ChoiceBox<String> classChoiseBox;
     private List<Element> items = new ArrayList<>();
     private static final Integer firstLvl = 1;
     private static final Integer secondLvl = 2;
     private static final Integer thirdLvl = 3;
     private static final Integer fourthLvl = 4;
     private Integer dimension;
+    private Integer counter = 9990;
+    private Label counterLabel = new Label(counter.toString());
 
     private final int lvlView = checkElementStyle();
 
@@ -41,14 +43,21 @@ public class Gui {
     public void skeleton(){
         root = new VBox();
         headerBox = new HBox();
-        head = new VBox();
+        body = new VBox();
+        gameGrid = new GridPane();
+        buttonsGrid = new GridPane();
+        //buttonsGrid.setGridLinesVisible(true);
+        //buttonsGrid.setPrefWidth(width*0.95);
+        buttonsGrid.setMaxWidth(width-10);
+        buttonsGrid.setMinWidth(width*0.95);
+        buttonsGrid.setAlignment(Pos.CENTER);
+        buttonsGrid.setPrefHeight(buttonsHeight);
+        body.getChildren().add(buttonsGrid);
 
         headerBox.setPrefHeight(headerHeight);
-        complexityButtons = new HBox();
-        complexityButtons.setPrefHeight(buttonsHeight);
-        head.getChildren().add(complexityButtons);
-        gameGrid = new GridPane();
-        head.getChildren().add(gameGrid);
+
+        body.getChildren().add(gameGrid);
+
         gameGrid.setPrefHeight(height-(2*headerHeight+buttonsHeight)+12);
         gameGrid.setPrefWidth(width*0.9);
         gameGrid.setMaxHeight(height-(2*headerHeight+buttonsHeight)+12);
@@ -56,7 +65,7 @@ public class Gui {
         exitButtons = new HBox();
         exitButtons.setPrefHeight(headerHeight);
         root.getChildren().add(0,headerBox);
-        root.getChildren().add(1,head);
+        root.getChildren().add(1,body);
         root.getChildren().add(2,exitButtons);
     }
 
@@ -66,7 +75,9 @@ public class Gui {
 
     public void setStyle(){
         headerBox.setId("header");
-        head.setId("back");
+        if(lvlView == 1)
+        body.setId("back1");
+        else body.setId("back2");
         gameGrid.setAlignment(Pos.CENTER);
         exitButtons.setId("exit");
         root.getStylesheets().addAll(this.getClass().getResource("/style/style.css").toExternalForm());
@@ -76,28 +87,46 @@ public class Gui {
             f.setAccessible(true);
             f.set(null, font);
         } catch(Exception e){
+            System.out.println("Не удалось установить шрифт");
             e.printStackTrace();
         }
 
     }
 
-    public void setComplexityButtons(){
+    public void setComponentsLook(){
         Label labelComplexity = new Label("Выберите класс:");
-        labelComplexity.setTextFill(Color.WHITE);
-        //labelComplexity.setAlignment(Pos.CENTER);
-        choiseComplexity = new ChoiceBox<>(FXCollections.observableArrayList(firstLvl.toString(), secondLvl.toString(),thirdLvl.toString(),fourthLvl.toString()));
-        complexityButtons.setSpacing(15);
-        complexityButtons.getChildren().add(labelComplexity);
-        complexityButtons.getChildren().add(choiseComplexity);
-        complexityButtons.setAlignment(Pos.CENTER_LEFT);
 
-        choiseComplexity.setOnAction(event -> {
+        labelComplexity.setTextFill(Color.WHITE);
+        labelComplexity.setAlignment(Pos.CENTER);
+        classChoiseBox = new ChoiceBox<>(FXCollections.observableArrayList(firstLvl.toString(), secondLvl.toString(),thirdLvl.toString(),fourthLvl.toString()));
+        ColumnConstraints col1 = new ColumnConstraints();
+        ColumnConstraints col2 = new ColumnConstraints();
+        ColumnConstraints col3 = new ColumnConstraints();
+        ColumnConstraints col4 = new ColumnConstraints();
+        ColumnConstraints col5 = new ColumnConstraints();
+        ColumnConstraints col6 = new ColumnConstraints();
+        col1.setPercentWidth(26);
+        col2.setPercentWidth(10);
+        col3.setPercentWidth(15);
+        col4.setPercentWidth(15);
+        col5.setPercentWidth(15);
+        col6.setPercentWidth(30);
+        buttonsGrid.getColumnConstraints().addAll(col1,col2,col3,col4,col5);
+        buttonsGrid.add(labelComplexity,0,0);
+        buttonsGrid.add(classChoiseBox,1,0);
+        buttonsGrid.add(counterLabel,6,0);
+        //buttonsGrid.addColumn(1,counterLabel);
+        //buttonsGrid.getColumnConstraints().get(1).setPercentWidth(50);
+
+        counterLabel.setAlignment(Pos.CENTER_RIGHT);
+        counterLabel.setFont(Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),45));
+        counterLabel.setTextFill(Color.WHITE);
+
+
+        classChoiseBox.setOnAction(event -> {
             gameGrid.getChildren().clear();
             gameGrid.getColumnConstraints().clear();
             gameGrid.getRowConstraints().clear();
-//            Integer complexity = Integer.parseInt(choiseComplexity.getValue());
-//            if(complexity == firstLvl || complexity == secondLvl) dimension = 4;
-//            else if(complexity == thirdLvl || complexity == fourthLvl) dimension = 10;
             dimension = 4;
             drawTask(dimension);
         });
@@ -108,6 +137,9 @@ public class Gui {
         for(Element el:items){
             el.getImageButton().setOnMouseClicked(event -> {
                 el.clickAction();
+                if(counter<9999)
+                counter++;
+                counterLabel.setText(counter.toString());
                 for(Element el2:items){
                     if ((el.getColumn() == el2.getColumn() && el.getRow() != el2.getRow()) || (el.getColumn() != el2.getColumn() && el.getRow() ==el2.getRow()))
                         el2.clickAction();

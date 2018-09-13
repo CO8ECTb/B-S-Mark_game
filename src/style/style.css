@@ -5,8 +5,16 @@
     -fx-background-position: center center;
 }
 
-#back{
+#back1{
     -fx-background-image: url("/resources/green.png");
+    -fx-background-repeat: stretch;
+    -fx-background-size:  cover;
+    -fx-background-position: center center;
+    background-color:rgba(0,0,0,.3);
+}
+
+#back2{
+    -fx-background-image: url("/resources/stone.jpg");
     -fx-background-repeat: stretch;
     -fx-background-size:  cover;
     -fx-background-position: center center;

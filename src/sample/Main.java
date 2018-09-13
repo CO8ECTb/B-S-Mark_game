@@ -33,7 +33,7 @@ public class Main extends Application {
         Scene scene = new Scene(root,width,height);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-        gui.setComplexityButtons();
+        gui.setComponentsLook();
         primaryStage.setTitle("B-S-Mark Game");
         primaryStage.show();
     }
