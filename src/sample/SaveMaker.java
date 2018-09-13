@@ -8,20 +8,21 @@ import java.util.List;
 // 0 = | (not rotated)
 
 public class SaveMaker {
-    private final static String SAVE_FOLDER = new File("saves").toString();
+    private final static String COMMON_SAVE_FOLDER = new File("saves").toString();
     private final static int MAX_SAVE_LEN = 4096;
 
-    public static void InitSaveDirIfNeed() {
-        File saveDir = new File(SAVE_FOLDER);
+    public static void InitSaveDirIfNeed(Integer grade) {
+        File saveDir = new File(COMMON_SAVE_FOLDER, grade.toString());
         if (!saveDir.exists()) {
             saveDir.mkdirs();
         }
     }
 
-    public static List<Integer> ReadDataFromFile(String filename) {
-        InitSaveDirIfNeed();
+    public static List<Integer> ReadDataFromFile(String filename, Integer grade) {
+        InitSaveDirIfNeed(grade);
 
-        File file = new File(SAVE_FOLDER, filename.concat(".sav"));
+        File saveFolder = new File(COMMON_SAVE_FOLDER, grade.toString());
+        File file = new File(saveFolder, filename.concat(".sav"));
 //        System.out.println("FilePath is: " + file);
 
         List<Integer> data = new ArrayList<>();
@@ -76,10 +77,11 @@ public class SaveMaker {
         return data;
     }
 
-    public static boolean WriteDataToFile(List<Integer> field, Integer style, String filename) {
-        InitSaveDirIfNeed();
+    public static boolean WriteDataToFile(List<Integer> field, Integer style, Integer grade, String filename) {
+        InitSaveDirIfNeed(grade);
 
-        File file = new File(SAVE_FOLDER, filename.concat(".sav"));
+        File saveForlder = new File(COMMON_SAVE_FOLDER, grade.toString());
+        File file = new File(saveForlder, filename.concat(".sav"));
 //        System.out.println("FilePath save is: " + file);
 
         try {
@@ -150,11 +152,12 @@ public class SaveMaker {
         int style = 1;
         String filename = "01";
 
-        if (!WriteDataToFile(field, style, filename)) {
+        int grade = 1;
+        if (!WriteDataToFile(field, style, grade, filename)) {
             return false;
         }
 
-        List<Integer> dataFromFile = ReadDataFromFile(filename);
+        List<Integer> dataFromFile = ReadDataFromFile(filename, grade);
         for (int i = 0; i < field.size(); ++i) {
             if (field.get(i) != dataFromFile.get(i)) {
                 return false;
