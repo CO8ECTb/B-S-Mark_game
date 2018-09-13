@@ -1,7 +1,6 @@
 package sample;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class SaveMaker {
         initSaveDirIfNeed();
 
         File file = new File(SAVE_FOLDER, filename.concat(".sav"));
-        System.out.println("FilePath is: " + file);
+//        System.out.println("FilePath is: " + file);
 
         List<Integer> data = new ArrayList<>();
         try {
@@ -33,22 +32,29 @@ public class SaveMaker {
                 offset += add;
             }
 
-            int sideSize = bytes[0];
+//            System.out.println("Size of file is: " + offset);
+
+            int idx = 0;
+            int sideSize = bytes[idx++];
+//            System.out.println("side size is: " + sideSize);
+
             int hashSumByCount = 0;
-            for (int i = 0; i < sideSize * sideSize; ++i) {
-                int elem = bytes[i];
+            int fieldSize = sideSize * sideSize;
+            for (int i = 0; i < fieldSize; ++i) {
+                int elem = bytes[idx++];
                 hashSumByCount += elem;
                 data.add(elem);
             }
+//            System.out.println("hash sum by count is: " + hashSumByCount);
 
-            int hashSumIdx = 1 + data.size();
-            int hashSumFromFile = bytes[hashSumIdx];
+            int hashSumFromFile = bytes[idx++];
+//            System.out.println("hash sum from fule is: " + hashSumFromFile);
             if (hashSumFromFile != hashSumByCount) {
                 throw new RuntimeException();
             }
 
-            int styleIdx = hashSumIdx + 1;
-            int styleValue = bytes[styleIdx];
+            int styleValue = bytes[idx++];
+//            System.out.println("style is: " + styleValue);
             data.add(styleValue);
         }
         catch (FileNotFoundException e) {
@@ -71,7 +77,7 @@ public class SaveMaker {
         initSaveDirIfNeed();
 
         File file = new File(SAVE_FOLDER, filename.concat(".sav"));
-        System.out.println("FilePath save is: " + file);
+//        System.out.println("FilePath save is: " + file);
 
         try {
             if (!file.exists()) {
