@@ -22,7 +22,7 @@
 }
 
 
-#exit{
+#footer{
     -fx-background-image: url("/resources/exit.png");
     -fx-background-repeat: stretch;
     -fx-background-size:  cover;

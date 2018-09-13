@@ -79,7 +79,7 @@ public class Element{
     }
 
     public void clickAction(){
-        rt.setDuration(Duration.millis(180));
+        rt.setDuration(Duration.millis(200));
         rt.setNode(imageButton);
         if(this.imageButton.getRotate() == 0) {
             this.rotated = true;

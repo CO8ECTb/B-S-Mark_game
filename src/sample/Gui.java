@@ -19,8 +19,9 @@ import java.util.Random;
     private VBox root, body;
     private HBox headerBox;
     private GridPane gameGrid, buttonsGrid;
-    private HBox exitButtons;
+    private HBox footerButtons;
     private ChoiceBox<String> classChoiseBox;
+    private Button previousLvl, nextLvl, reset,quit;
     private List<Element> items = new ArrayList<>();
     private static final Integer firstLvl = 1;
     private static final Integer secondLvl = 2;
@@ -29,6 +30,8 @@ import java.util.Random;
     private Integer dimension;
     private Integer counter = 9990;
     private Label counterLabel = new Label(counter.toString());
+     Double fontSize;
+     Double counterSize;
 
     private final int lvlView = checkElementStyle();
 
@@ -46,8 +49,7 @@ import java.util.Random;
         body = new VBox();
         gameGrid = new GridPane();
         buttonsGrid = new GridPane();
-        //buttonsGrid.setGridLinesVisible(true);
-        //buttonsGrid.setPrefWidth(width*0.95);
+        buttonsGrid.setGridLinesVisible(true);
         buttonsGrid.setMaxWidth(width-10);
         buttonsGrid.setMinWidth(width*0.95);
         buttonsGrid.setAlignment(Pos.CENTER);
@@ -62,11 +64,11 @@ import java.util.Random;
         gameGrid.setPrefWidth(width*0.9);
         gameGrid.setMaxHeight(height-(2*headerHeight+buttonsHeight)+12);
         gameGrid.setMinHeight(height-(2*headerHeight+buttonsHeight)+12);
-        exitButtons = new HBox();
-        exitButtons.setPrefHeight(headerHeight);
+        footerButtons = new HBox();
+        footerButtons.setPrefHeight(headerHeight);
         root.getChildren().add(0,headerBox);
         root.getChildren().add(1,body);
-        root.getChildren().add(2,exitButtons);
+        root.getChildren().add(2,footerButtons);
     }
 
     public VBox getRoot(){
@@ -79,9 +81,12 @@ import java.util.Random;
         body.setId("back1");
         else body.setId("back2");
         gameGrid.setAlignment(Pos.CENTER);
-        exitButtons.setId("exit");
+        footerButtons.setId("footer");
         root.getStylesheets().addAll(this.getClass().getResource("/style/style.css").toExternalForm());
-        Font font = Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),18);
+        fontSize = (this.width/42);
+        counterSize = this.width/17;
+
+        Font font = Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),fontSize);
         try {
             Field f = Font.class.getDeclaredField("DEFAULT");
             f.setAccessible(true);
@@ -94,35 +99,41 @@ import java.util.Random;
     }
 
     public void setComponentsLook(){
-        Label labelComplexity = new Label("Выберите класс:");
+        Label labelComplfootery = new Label("Класс:");
 
-        labelComplexity.setTextFill(Color.WHITE);
-        labelComplexity.setAlignment(Pos.CENTER);
+        labelComplfootery.setTextFill(Color.WHITE);
+        labelComplfootery.setAlignment(Pos.CENTER);
         classChoiseBox = new ChoiceBox<>(FXCollections.observableArrayList(firstLvl.toString(), secondLvl.toString(),thirdLvl.toString(),fourthLvl.toString()));
+
+
+
         ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints();
         ColumnConstraints col3 = new ColumnConstraints();
         ColumnConstraints col4 = new ColumnConstraints();
         ColumnConstraints col5 = new ColumnConstraints();
         ColumnConstraints col6 = new ColumnConstraints();
-        col1.setPercentWidth(26);
+        col1.setPercentWidth(11);
         col2.setPercentWidth(10);
-        col3.setPercentWidth(15);
-        col4.setPercentWidth(15);
-        col5.setPercentWidth(15);
+        col3.setPercentWidth(20);
+        col4.setPercentWidth(20);
+        col5.setPercentWidth(20);
         col6.setPercentWidth(30);
         buttonsGrid.getColumnConstraints().addAll(col1,col2,col3,col4,col5);
-        buttonsGrid.add(labelComplexity,0,0);
+        buttonsGrid.add(labelComplfootery,0,0);
         buttonsGrid.add(classChoiseBox,1,0);
         buttonsGrid.add(counterLabel,6,0);
         //buttonsGrid.addColumn(1,counterLabel);
         //buttonsGrid.getColumnConstraints().get(1).setPercentWidth(50);
 
         counterLabel.setAlignment(Pos.CENTER_RIGHT);
-        counterLabel.setFont(Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),45));
+
+        counterLabel.setFont(Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),counterSize));
         counterLabel.setTextFill(Color.WHITE);
 
 
+        System.out.println(this.width);
+        System.out.println(this.height);
         classChoiseBox.setOnAction(event -> {
             gameGrid.getChildren().clear();
             gameGrid.getColumnConstraints().clear();

@@ -9,6 +9,8 @@ package sample;
 // 2  6  10 14
 // 3  7  11 15
 
+// confirmed by CO8ECTb
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
