@@ -96,7 +96,7 @@ public class Helper {
         return -1;
     }
 
-    public List<Integer> GenField(int sideSize, int difficulty, int seed) {
+    public static List<Integer> GenField(int sideSize, int difficulty, int seed) {
         final int fieldSize = sideSize * sideSize;
         final int maxDifficulty = fieldSize + 1;
         if (difficulty > maxDifficulty) {

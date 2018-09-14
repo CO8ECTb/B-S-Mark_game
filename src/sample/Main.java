@@ -23,6 +23,8 @@ public class Main extends Application {
 
         Helper.TestGetTip();
 
+//        LvlGenerator.GenAll();
+
         primaryStage.getIcons().add(new Image("resources/icon.png"));
         width = Screen.getPrimary().getBounds().getWidth()*0.4;
         height = Screen.getPrimary().getBounds().getHeight()*0.8;
