@@ -52,6 +52,7 @@ public class Element{
     }
 
     public Button getImageButton() {
+        if(isRotated()) imageButton.setRotate(90);
         return imageButton;
     }
 

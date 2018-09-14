@@ -168,7 +168,7 @@ public class SaveMaker {
 
 
 
-    public List<Element> parseCollection(List<Integer> list, int dimension){
+    public static List<Element> parseCollection(List<Integer> list, int dimension){
         List<Element> elements = new ArrayList<>();
         int lvlStyle = list.get(list.size()-1);
         for(int i = 0; i < list.size()-1; ++i){

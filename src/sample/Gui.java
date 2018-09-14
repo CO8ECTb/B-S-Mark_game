@@ -8,8 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
-
 import java.util.*;
 import java.lang.reflect.Field;
 
@@ -180,7 +178,8 @@ class Gui {
             gameGrid.getColumnConstraints().clear();
             gameGrid.getRowConstraints().clear();
 
-            drawTask(dimension,grade,"1");
+            //drawTask(dimension,grade,"1");
+            loadLevel("6",grade);
         });
     }
 
@@ -263,18 +262,17 @@ class Gui {
         return ids;
     }
 
-    public void loadLevel(){
-
+    public void loadLevel(String lvl, Integer grade){
+        drawTask(SaveMaker.parseCollection(SaveMaker.ReadDataFromFile(lvl,grade),dimension),dimension);
     }
 
 
-    public void drawTask(Integer dimension, int grade, String filename){
+    public void drawTask(List<Element> list, Integer dimension){
+        items.clear();
         gameGrid.getChildren().clear();
         gameGrid.getColumnConstraints().clear();
         gameGrid.getRowConstraints().clear();
         gameGrid.setGridLinesVisible(true);
-        items.clear();
-
         for(int i = 0; i< dimension; i++){
             double rowHeight = gameGrid.getPrefHeight() / dimension;
             double columnWidth = gameGrid.getPrefWidth() / dimension;
@@ -284,7 +282,8 @@ class Gui {
         for(int i = 0; i < dimension*dimension; i++) {
             int col = i/dimension;
             int row = i-col*dimension;
-            Element item = new Element(col,row,false,false,lvlView);
+            Element item = list.get(i);
+            //Element item = new Element(col,row,false,false,lvlView);
             item.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-5);
             item.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-5);
             item.getImageButton().setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
@@ -293,6 +292,7 @@ class Gui {
             gameGrid.setMargin(item.getImageButton(), new Insets(5));
             items.add(item);
         }
+
         listen();
     }
 
