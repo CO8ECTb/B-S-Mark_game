@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 class Gui {
     private Double width;
     private Double height;
+    private Integer level = 1;
     private Double headerHeight,buttonsHeight;
     private VBox root, body;
     private HBox headerBox;
@@ -27,12 +28,13 @@ class Gui {
     private static final Integer thirdLvl = 3;
     private static final Integer fourthLvl = 4;
     private final Integer dimension = 4;
+    private Integer grade;
     private Integer counter = 0;
     private Label counterLabel = new Label(counter.toString());
     private Double fontSize;
     private Double counterSize;
 
-    private int lvlView = checkElementStyle();
+    private int lvlView;
 
 
     public Gui(Double width, Double height){
@@ -42,9 +44,6 @@ class Gui {
         buttonsHeight = height * 0.1;
     }
 
-    public void setLvlView(int lvlView){
-        this.lvlView = lvlView;
-    }
 
 
 
@@ -54,7 +53,6 @@ class Gui {
         body = new VBox();
         gameGrid = new GridPane();
         buttonsGrid = new GridPane();
-        //buttonsGrid.setGridLinesVisible(true);
         buttonsGrid.setMaxWidth(width-10);
         buttonsGrid.setMinWidth(width*0.95);
         buttonsGrid.setAlignment(Pos.CENTER);
@@ -82,9 +80,7 @@ class Gui {
 
     public void setStyle(){
         headerBox.setId("header");
-        if(lvlView == 1)
-        body.setId("back1");
-        else body.setId("back2");
+        body.setId("startBack");
         gameGrid.setAlignment(Pos.CENTER);
         footerButtons.setId("footer");
         root.getStylesheets().addAll(this.getClass().getResource("/style/style.css").toExternalForm());
@@ -168,19 +164,45 @@ class Gui {
 
         classChoiseBox.setOnAction(event -> {
             if(reset.isDisable() || prevLvl.isDisable() || nextLvl.isDisable()){
-                reset.setDisable(false);
-                prevLvl.setDisable(false);
+                if(level != 1) prevLvl.setDisable(false);
+                else prevLvl.setDisable(true);
+
+                if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(false);
+                else nextLvl.setDisable(true);
+
                 nextLvl.setDisable(false);
+                reset.setDisable(false);
             }
             classChoiseBox.setDisable(true);
-            int grade = Integer.parseInt(classChoiseBox.getValue());
+            grade = Integer.parseInt(classChoiseBox.getValue());
             gameGrid.getChildren().clear();
             gameGrid.getColumnConstraints().clear();
             gameGrid.getRowConstraints().clear();
 
             //drawTask(dimension,grade,"1");
-            loadLevel("6",grade);
+            loadLevel(level.toString(),grade);
         });
+
+
+        prevLvl.setOnAction(event -> {
+            level--;
+            if(level <= 1){
+                prevLvl.setDisable(true);
+            }
+            else  prevLvl.setDisable(false);
+            if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
+            else nextLvl.setDisable(false);
+            loadLevel(level.toString(),grade);
+        });
+
+        nextLvl.setOnAction(event -> {
+            level++;
+            if(level > 1) prevLvl.setDisable(false);
+            loadLevel(level.toString(),grade);
+            if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
+        });
+
+
     }
 
 
@@ -188,8 +210,14 @@ class Gui {
         for(Element el:items){
             el.getImageButton().setOnMouseClicked(event -> {
                 el.clickAction();
-                if(counter<9999)
-                counter++;
+                if(counter<9999) counter++;
+
+                if(level != 1) prevLvl.setDisable(false);
+                else prevLvl.setDisable(true);
+
+                if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(false);
+                else nextLvl.setDisable(true);
+
                 counterLabel.setText(counter.toString());
                 for(Element el2:items){
                     if ((el.getColumn() == el2.getColumn() && el.getRow() != el2.getRow()) || (el.getColumn() != el2.getColumn() && el.getRow() ==el2.getRow()))
@@ -263,6 +291,10 @@ class Gui {
     }
 
     public void loadLevel(String lvl, Integer grade){
+        this.lvlView = SaveMaker.getLevelStyle(SaveMaker.ReadDataFromFile(lvl,grade));
+        if(lvlView == 1)
+        body.setId("back1");
+        else body.setId("back2");
         drawTask(SaveMaker.parseCollection(SaveMaker.ReadDataFromFile(lvl,grade),dimension),dimension);
     }
 
@@ -283,7 +315,6 @@ class Gui {
             int col = i/dimension;
             int row = i-col*dimension;
             Element item = list.get(i);
-            //Element item = new Element(col,row,false,false,lvlView);
             item.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-5);
             item.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-5);
             item.getImageButton().setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
@@ -311,10 +342,10 @@ class Gui {
         }
     }
 
-    public int checkElementStyle(){
-        Random ra = new Random();
-        if (ra.nextInt()%2 == 0)return 0;
-        else return 1;
-    }
+//    public int checkElementStyle(){
+//        Random ra = new Random();
+//        if (ra.nextInt()%2 == 0)return 0;
+//        else return 1;
+//    }
 }
  

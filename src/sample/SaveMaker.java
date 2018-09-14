@@ -180,4 +180,9 @@ public class SaveMaker {
         }
         return elements;
     }
+
+
+    public static Integer getLevelStyle(List<Integer> list){
+        return list.get(list.size()-1);
+    }
 }

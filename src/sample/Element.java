@@ -51,6 +51,10 @@ public class Element{
         return view;
     }
 
+    public Integer getLvlView(){
+        return lvlView;
+    }
+
     public Button getImageButton() {
         if(isRotated()) imageButton.setRotate(90);
         return imageButton;

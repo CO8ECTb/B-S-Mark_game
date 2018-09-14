@@ -21,6 +21,14 @@
     background-color:rgba(0,0,0,.3);
 }
 
+#startBack{
+    -fx-background-image: url("/resources/startBack.png");
+    -fx-background-repeat: stretch;
+    -fx-background-size:  cover;
+    -fx-background-position: center center;
+    background-color:rgba(0,0,0,.3);
+}
+
 
 #footer{
     -fx-background-image: url("/resources/exit.png");
