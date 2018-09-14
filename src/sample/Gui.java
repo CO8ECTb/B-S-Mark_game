@@ -21,7 +21,7 @@ import java.util.Random;
     private GridPane gameGrid, buttonsGrid;
     private HBox footerButtons;
     private ChoiceBox<String> classChoiseBox;
-    private Button previousLvl, nextLvl, reset,quit;
+    private Button prevLvl, nextLvl, reset,quit;
     private List<Element> items = new ArrayList<>();
     private static final Integer firstLvl = 1;
     private static final Integer secondLvl = 2;
@@ -99,13 +99,29 @@ import java.util.Random;
     }
 
     public void setComponentsLook(){
-        Label labelComplfootery = new Label("Класс:");
+        Label labelComplfootery = new Label("Класс: ");
 
         labelComplfootery.setTextFill(Color.WHITE);
         labelComplfootery.setAlignment(Pos.CENTER);
         classChoiseBox = new ChoiceBox<>(FXCollections.observableArrayList(firstLvl.toString(), secondLvl.toString(),thirdLvl.toString(),fourthLvl.toString()));
+        prevLvl = new Button("<-");
+        prevLvl.setMaxWidth(Double.MAX_VALUE);
+        GridPane.setHgrow(prevLvl, Priority.ALWAYS);
+        GridPane.setVgrow(prevLvl, Priority.ALWAYS);
+        GridPane.setMargin(prevLvl, new Insets(8));
 
+        nextLvl = new Button("->");
+        nextLvl.setMaxWidth(Double.MAX_VALUE);
+        GridPane.setHgrow(nextLvl, Priority.ALWAYS);
+        GridPane.setVgrow(nextLvl, Priority.ALWAYS);
+        GridPane.setMargin(nextLvl, new Insets(8));
 
+        reset = new Button("Заново");
+        reset.setMaxWidth(Double.MAX_VALUE);
+        reset.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setHgrow(reset, Priority.ALWAYS);
+        GridPane.setVgrow(reset, Priority.ALWAYS);
+        GridPane.setMargin(reset, new Insets(8));
 
         ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints();
@@ -114,15 +130,23 @@ import java.util.Random;
         ColumnConstraints col5 = new ColumnConstraints();
         ColumnConstraints col6 = new ColumnConstraints();
         col1.setPercentWidth(11);
-        col2.setPercentWidth(10);
-        col3.setPercentWidth(20);
-        col4.setPercentWidth(20);
+        col2.setPercentWidth(12);
+        col3.setPercentWidth(18);
+        col4.setPercentWidth(18);
         col5.setPercentWidth(20);
         col6.setPercentWidth(30);
+
         buttonsGrid.getColumnConstraints().addAll(col1,col2,col3,col4,col5);
         buttonsGrid.add(labelComplfootery,0,0);
         buttonsGrid.add(classChoiseBox,1,0);
-        buttonsGrid.add(counterLabel,6,0);
+        buttonsGrid.add(counterLabel,5,0);
+        buttonsGrid.add(prevLvl,2,0);
+        buttonsGrid.add(nextLvl,3,0);
+        buttonsGrid.add(reset,4,0);
+
+
+
+
         //buttonsGrid.addColumn(1,counterLabel);
         //buttonsGrid.getColumnConstraints().get(1).setPercentWidth(50);
 
@@ -130,10 +154,6 @@ import java.util.Random;
 
         counterLabel.setFont(Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),counterSize));
         counterLabel.setTextFill(Color.WHITE);
-
-
-        System.out.println(this.width);
-        System.out.println(this.height);
         classChoiseBox.setOnAction(event -> {
             gameGrid.getChildren().clear();
             gameGrid.getColumnConstraints().clear();
@@ -155,7 +175,7 @@ import java.util.Random;
                     if ((el.getColumn() == el2.getColumn() && el.getRow() != el2.getRow()) || (el.getColumn() != el2.getColumn() && el.getRow() ==el2.getRow()))
                         el2.clickAction();
                 }
-                List<Integer> list = getRedStoneLight(items);
+                List<Integer> list = getLight(items);
                 for(int i = 0; i < dimension*dimension; ++i){
                     items.get(i).setActivity(false);
                 }
@@ -213,7 +233,7 @@ import java.util.Random;
         }
     }
 
-    private List<Integer> getRedStoneLight(List<Element> list) {
+    private List<Integer> getLight(List<Element> list) {
         List<Integer> ids = new ArrayList<>();
         for (int i = 0; i < dimension; ++i) {
            // if (checkColumn(list, i))addColumn(ids, i);
@@ -240,7 +260,6 @@ import java.util.Random;
                 gameGrid.add(item.getImageButton(),i,j);
                 gameGrid.setMargin(item.getImageButton(), new Insets(5));
                 items.add(item);
-
             }
         }
         listen();
