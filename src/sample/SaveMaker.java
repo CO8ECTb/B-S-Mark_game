@@ -150,9 +150,9 @@ public class SaveMaker {
         }
 
         int style = 1;
-        String filename = "01";
+        String filename = "1";
 
-        int grade = 1;
+        int grade = 0;
         if (!WriteDataToFile(field, style, grade, filename)) {
             return false;
         }

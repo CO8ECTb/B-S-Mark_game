@@ -20,15 +20,16 @@ public class LvlGenerator {
         {342356, 5656, 76788, 456456, 564563, 45233452, 35234345}
     };
 
+    public static int GetLvlCountByGrade(int grade) {
+        return LVLS;
+    }
+
     public static void GenAll() {
         Random gen = new Random();
         for (int i = 0; i < GRADES; ++i) {
             for (int j = 0; j < LVLS; ++j) {
                 List<Integer> field = Helper.GenField(SIDE_SIZE, DIFF[i][j], SEEDS[i][j]);
                 String str = new Integer(1 + j).toString();
-                if (str.length() == 1) {
-                    str = "0".concat(str);
-                }
                 SaveMaker.WriteDataToFile(field, gen.nextInt() % 2, 1 + i, str);
             }
         }
