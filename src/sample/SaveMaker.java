@@ -165,4 +165,19 @@ public class SaveMaker {
         }
         return dataFromFile.get(dataFromFile.size() - 1) == style;
     }
+
+
+
+    public List<Element> parseCollection(List<Integer> list, int dimension){
+        List<Element> elements = new ArrayList<>();
+        int lvlStyle = list.get(list.size()-1);
+        for(int i = 0; i < list.size()-1; ++i){
+            boolean isRotated = list.get(i) != 0;
+            int col = i/dimension;
+            int row = i-col*dimension;
+            Element element = new Element(col,row,false,isRotated,lvlStyle);
+            elements.add(element);
+        }
+        return elements;
+    }
 }

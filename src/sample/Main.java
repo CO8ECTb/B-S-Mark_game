@@ -7,6 +7,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Main extends Application {
@@ -22,9 +24,6 @@ public class Main extends Application {
         }
 
         Helper.TestGetTip();
-
-//        LvlGenerator.GenAll();
-
         primaryStage.getIcons().add(new Image("resources/icon.png"));
         width = Screen.getPrimary().getBounds().getWidth()*0.4;
         height = Screen.getPrimary().getBounds().getHeight()*0.8;
@@ -34,9 +33,9 @@ public class Main extends Application {
         this.root = gui.getRoot();
         Scene scene = new Scene(root,width,height);
         primaryStage.setScene(scene);
-        //primaryStage.setResizable(false);
+        primaryStage.setResizable(false);
         gui.setComponentsLook();
-        primaryStage.setTitle("B-S-Mark Game");
+        primaryStage.setTitle("BS-Mark Game");
         primaryStage.show();
     }
 

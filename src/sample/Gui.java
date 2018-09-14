@@ -1,18 +1,19 @@
 package sample;
 
 import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
- class Gui {
+
+import java.util.*;
+import java.lang.reflect.Field;
+
+class Gui {
     private Double width;
     private Double height;
     private Double headerHeight,buttonsHeight;
@@ -21,19 +22,19 @@ import java.util.Random;
     private GridPane gameGrid, buttonsGrid;
     private HBox footerButtons;
     private ChoiceBox<String> classChoiseBox;
-    private Button prevLvl, nextLvl, reset,quit;
+    private Button prevLvl, nextLvl, reset,quit, cheatButton;
     private List<Element> items = new ArrayList<>();
     private static final Integer firstLvl = 1;
     private static final Integer secondLvl = 2;
     private static final Integer thirdLvl = 3;
     private static final Integer fourthLvl = 4;
-    private Integer dimension;
-    private Integer counter = 9990;
+    private final Integer dimension = 4;
+    private Integer counter = 0;
     private Label counterLabel = new Label(counter.toString());
-     Double fontSize;
-     Double counterSize;
+    private Double fontSize;
+    private Double counterSize;
 
-    private final int lvlView = checkElementStyle();
+    private int lvlView = checkElementStyle();
 
 
     public Gui(Double width, Double height){
@@ -43,13 +44,19 @@ import java.util.Random;
         buttonsHeight = height * 0.1;
     }
 
+    public void setLvlView(int lvlView){
+        this.lvlView = lvlView;
+    }
+
+
+
     public void skeleton(){
         root = new VBox();
         headerBox = new HBox();
         body = new VBox();
         gameGrid = new GridPane();
         buttonsGrid = new GridPane();
-        buttonsGrid.setGridLinesVisible(true);
+        //buttonsGrid.setGridLinesVisible(true);
         buttonsGrid.setMaxWidth(width-10);
         buttonsGrid.setMinWidth(width*0.95);
         buttonsGrid.setAlignment(Pos.CENTER);
@@ -99,23 +106,29 @@ import java.util.Random;
     }
 
     public void setComponentsLook(){
-        Label labelComplfootery = new Label("Класс: ");
 
-        labelComplfootery.setTextFill(Color.WHITE);
-        labelComplfootery.setAlignment(Pos.CENTER);
+        Label labelComplexity = new Label("Класс: ");
+        labelComplexity.setTextFill(Color.WHITE);
+
+        //Выбор класса
         classChoiseBox = new ChoiceBox<>(FXCollections.observableArrayList(firstLvl.toString(), secondLvl.toString(),thirdLvl.toString(),fourthLvl.toString()));
+
+        //Кнопка пред лвл
         prevLvl = new Button("<-");
         prevLvl.setMaxWidth(Double.MAX_VALUE);
         GridPane.setHgrow(prevLvl, Priority.ALWAYS);
         GridPane.setVgrow(prevLvl, Priority.ALWAYS);
         GridPane.setMargin(prevLvl, new Insets(8));
 
+        //Кнопка след лвл
         nextLvl = new Button("->");
         nextLvl.setMaxWidth(Double.MAX_VALUE);
         GridPane.setHgrow(nextLvl, Priority.ALWAYS);
         GridPane.setVgrow(nextLvl, Priority.ALWAYS);
         GridPane.setMargin(nextLvl, new Insets(8));
 
+
+        //Кнопка заново
         reset = new Button("Заново");
         reset.setMaxWidth(Double.MAX_VALUE);
         reset.setMaxHeight(Double.MAX_VALUE);
@@ -123,43 +136,51 @@ import java.util.Random;
         GridPane.setVgrow(reset, Priority.ALWAYS);
         GridPane.setMargin(reset, new Insets(8));
 
+        //Счетчик нажатий
+        counterLabel.setAlignment(Pos.CENTER_RIGHT);
+        counterLabel.setFont(Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),counterSize));
+        counterLabel.setTextFill(Color.WHITE);
+        buttonsGrid.setHalignment(counterLabel, HPos.RIGHT);
+
+        ColumnConstraints col0 = new ColumnConstraints();
         ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints();
         ColumnConstraints col3 = new ColumnConstraints();
         ColumnConstraints col4 = new ColumnConstraints();
         ColumnConstraints col5 = new ColumnConstraints();
-        ColumnConstraints col6 = new ColumnConstraints();
-        col1.setPercentWidth(11);
-        col2.setPercentWidth(12);
-        col3.setPercentWidth(18);
-        col4.setPercentWidth(18);
-        col5.setPercentWidth(20);
-        col6.setPercentWidth(30);
 
-        buttonsGrid.getColumnConstraints().addAll(col1,col2,col3,col4,col5);
-        buttonsGrid.add(labelComplfootery,0,0);
+        col0.setPercentWidth(11);
+        col1.setPercentWidth(12);
+        col2.setPercentWidth(18);
+        col3.setPercentWidth(18);
+        col4.setPercentWidth(20);
+        col5.setPercentWidth(20);
+
+        buttonsGrid.getColumnConstraints().addAll(col0,col1,col2,col3,col4,col5);
+        buttonsGrid.add(labelComplexity,0,0);
         buttonsGrid.add(classChoiseBox,1,0);
-        buttonsGrid.add(counterLabel,5,0);
         buttonsGrid.add(prevLvl,2,0);
         buttonsGrid.add(nextLvl,3,0);
         buttonsGrid.add(reset,4,0);
+        buttonsGrid.add(counterLabel,5,0);
 
+        reset.setDisable(true);
+        prevLvl.setDisable(true);
+        nextLvl.setDisable(true);
 
-
-
-        //buttonsGrid.addColumn(1,counterLabel);
-        //buttonsGrid.getColumnConstraints().get(1).setPercentWidth(50);
-
-        counterLabel.setAlignment(Pos.CENTER_RIGHT);
-
-        counterLabel.setFont(Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),counterSize));
-        counterLabel.setTextFill(Color.WHITE);
         classChoiseBox.setOnAction(event -> {
+            if(reset.isDisable() || prevLvl.isDisable() || nextLvl.isDisable()){
+                reset.setDisable(false);
+                prevLvl.setDisable(false);
+                nextLvl.setDisable(false);
+            }
+            classChoiseBox.setDisable(true);
+            int grade = Integer.parseInt(classChoiseBox.getValue());
             gameGrid.getChildren().clear();
             gameGrid.getColumnConstraints().clear();
             gameGrid.getRowConstraints().clear();
-            dimension = 4;
-            drawTask(dimension);
+
+            drawTask(dimension,grade,"1");
         });
     }
 
@@ -242,25 +263,35 @@ import java.util.Random;
         return ids;
     }
 
+    public void loadLevel(){
 
-    public void drawTask(Integer dimension){
+    }
+
+
+    public void drawTask(Integer dimension, int grade, String filename){
+        gameGrid.getChildren().clear();
+        gameGrid.getColumnConstraints().clear();
+        gameGrid.getRowConstraints().clear();
+        gameGrid.setGridLinesVisible(true);
         items.clear();
-        for(int i=0; i < dimension; i++){
+
+        for(int i = 0; i< dimension; i++){
             double rowHeight = gameGrid.getPrefHeight() / dimension;
             double columnWidth = gameGrid.getPrefWidth() / dimension;
             gameGrid.getRowConstraints().add(new RowConstraints(rowHeight));
             gameGrid.getColumnConstraints().add(new ColumnConstraints(columnWidth));
-
-            for(int j = 0; j < dimension; j++) {
-                Element item = new Element(i,j,false,false,lvlView);
-                item.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-5);
-                item.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-5);
-                item.getImageButton().setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
-                item.getImageButton().setBackground(Background.EMPTY);
-                gameGrid.add(item.getImageButton(),i,j);
-                gameGrid.setMargin(item.getImageButton(), new Insets(5));
-                items.add(item);
-            }
+        }
+        for(int i = 0; i < dimension*dimension; i++) {
+            int col = i/dimension;
+            int row = i-col*dimension;
+            Element item = new Element(col,row,false,false,lvlView);
+            item.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-5);
+            item.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-5);
+            item.getImageButton().setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+            item.getImageButton().setBackground(Background.EMPTY);
+            gameGrid.add(item.getImageButton(),col,row);
+            gameGrid.setMargin(item.getImageButton(), new Insets(5));
+            items.add(item);
         }
         listen();
     }
@@ -270,6 +301,7 @@ import java.util.Random;
         gameGrid.getChildren().clear();
         gameGrid.getColumnConstraints().clear();
         gameGrid.getRowConstraints().clear();
+        gameGrid.setGridLinesVisible(true);
         for(Element el:items){
             el.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-15);
             el.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-15);
