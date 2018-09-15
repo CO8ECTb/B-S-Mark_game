@@ -193,6 +193,9 @@ class Gui {
             if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
             else nextLvl.setDisable(false);
             loadLevel(level.toString(),grade);
+
+            this.counter = 0;
+            counterLabel.setText(counter.toString());
         });
 
         nextLvl.setOnAction(event -> {
@@ -200,7 +203,16 @@ class Gui {
             if(level > 1) prevLvl.setDisable(false);
             loadLevel(level.toString(),grade);
             if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
+            this.counter = 0;
+            counterLabel.setText(counter.toString());
         });
+
+        reset.setOnAction(event -> {
+            loadLevel(level.toString(),grade);
+            this.counter = 0;
+            counterLabel.setText(counter.toString());
+        }
+        );
 
 
     }
@@ -219,6 +231,7 @@ class Gui {
                 else nextLvl.setDisable(true);
 
                 counterLabel.setText(counter.toString());
+
                 for(Element el2:items){
                     if ((el.getColumn() == el2.getColumn() && el.getRow() != el2.getRow()) || (el.getColumn() != el2.getColumn() && el.getRow() ==el2.getRow()))
                         el2.clickAction();
@@ -304,7 +317,7 @@ class Gui {
         gameGrid.getChildren().clear();
         gameGrid.getColumnConstraints().clear();
         gameGrid.getRowConstraints().clear();
-        gameGrid.setGridLinesVisible(true);
+        //gameGrid.setGridLinesVisible(true);
         for(int i = 0; i< dimension; i++){
             double rowHeight = gameGrid.getPrefHeight() / dimension;
             double columnWidth = gameGrid.getPrefWidth() / dimension;
@@ -332,7 +345,7 @@ class Gui {
         gameGrid.getChildren().clear();
         gameGrid.getColumnConstraints().clear();
         gameGrid.getRowConstraints().clear();
-        gameGrid.setGridLinesVisible(true);
+        //gameGrid.setGridLinesVisible(true);
         for(Element el:items){
             el.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-15);
             el.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-15);
