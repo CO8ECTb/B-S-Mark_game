@@ -19,15 +19,16 @@ import java.util.Random;
 public class Helper {
     // only for fixed dimensions
     private static boolean isInited = false;
+    private static int dstSize;
     private static int[] distribution = null;
 
     public static void InitDistribution(int sideSize) {
         isInited = true;
 
         final int fieldSize = sideSize * sideSize;
-        final int size = 1 << fieldSize;;
-        int used[] = new int[size];
-        final int startState = size - 1;
+        dstSize = 1 << fieldSize;;
+        int used[] = new int[dstSize];
+        final int startState = dstSize - 1;
         used[startState] = 1;
 
         LinkedList<Integer> que = new LinkedList<>();
@@ -70,8 +71,10 @@ public class Helper {
     }
 
     public static int GetTip(List<Integer> field) {
+        final int fieldSize = field.size() - 1; // extra one that indicate style
+
         int sideSize = 0;
-        while (sideSize * sideSize < field.size()) {
+        while (sideSize * sideSize < fieldSize) {
             ++sideSize;
         }
 
@@ -80,13 +83,13 @@ public class Helper {
         }
 
         int mask = 0;
-        for (int i = 0; i < field.size(); ++i) {
+        for (int i = 0; i < fieldSize; ++i) {
             if (field.get(i) == 1) {
                 mask |= 1 << i;
             }
         }
 
-        for (int i = 0; i < field.size(); ++i) {
+        for (int i = 0; i < fieldSize; ++i) {
             int resMask = Mutate(mask, sideSize, i);
             if (distribution[resMask] + 1 == distribution[mask]) {
                 return i;
@@ -113,7 +116,7 @@ public class Helper {
         }
 
         List<Integer> resultedMasks = new ArrayList<>();
-        for (int i = 0; i < fieldSize; ++i) {
+        for (int i = 0; i < dstSize; ++i) {
             if (distribution[i] == difficulty) {
                 resultedMasks.add(i);
             }
