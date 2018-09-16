@@ -213,7 +213,6 @@ class Gui {
             gameGrid.getColumnConstraints().clear();
             gameGrid.getRowConstraints().clear();
 
-            //drawTask(dimension,grade,"1");
             loadLevel(level.toString(),grade);
         });
 
@@ -253,8 +252,6 @@ class Gui {
             lvlLabel.setVisible(true);
         }
         );
-
-
     }
 
 
@@ -285,14 +282,12 @@ class Gui {
                    items.get(list.get(i)).setActivity(true);
                 }
 
-                if(checkWin(items)) System.out.println("You win!");
+                if(checkWin(items)){
+
+                }
                 reDrawTask(items);
             });
         }
-
-
-
-
     }
 
     private boolean checkWin(List<Element> list){

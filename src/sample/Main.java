@@ -2,6 +2,8 @@ package sample;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -12,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class Main extends Application {
@@ -52,6 +55,14 @@ public class Main extends Application {
 
             if(event.getCode() == KeyCode.F1){
                 gui.getHelp();
+            }
+
+            if(event.getCode() == KeyCode.ESCAPE){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Выход");
+                alert.setHeaderText("Вы точно хотите выйти?");
+                Optional<ButtonType> option = alert.showAndWait();
+                if(option.get() == ButtonType.OK) System.exit(1);
             }
 
         });
