@@ -23,6 +23,7 @@ public class Main extends Application {
             System.out.println("Fail!");
         }
 
+        LvlGenerator.GenAll();
         Helper.TestGetTip();
         primaryStage.getIcons().add(new Image("resources/icon.png"));
         width = Screen.getPrimary().getBounds().getWidth()*0.4;

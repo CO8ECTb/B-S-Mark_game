@@ -31,9 +31,9 @@ class Gui {
     private Integer grade;
     private Integer counter = 0;
     private Label counterLabel = new Label(counter.toString());
+    private Label lvlLabel = new Label();
     private Double fontSize;
-    private Double counterSize;
-
+    private Double counterSize, lvlLabelSize;
     private int lvlView;
 
 
@@ -62,7 +62,8 @@ class Gui {
         headerBox.setPrefHeight(headerHeight);
 
         body.getChildren().add(gameGrid);
-
+        lvlLabel.setVisible(false);
+        headerBox.getChildren().add(lvlLabel);
         gameGrid.setPrefHeight(height-(2*headerHeight+buttonsHeight)+12);
         gameGrid.setPrefWidth(width*0.9);
         gameGrid.setMaxHeight(height-(2*headerHeight+buttonsHeight)+12);
@@ -82,10 +83,13 @@ class Gui {
         headerBox.setId("header");
         body.setId("startBack");
         gameGrid.setAlignment(Pos.CENTER);
+        headerBox.setAlignment(Pos.CENTER);
+
         footerButtons.setId("footer");
         root.getStylesheets().addAll(this.getClass().getResource("/style/style.css").toExternalForm());
         fontSize = (this.width/42);
         counterSize = this.width/17;
+        lvlLabelSize = this.width/20;
 
         Font font = Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),fontSize);
         try {
@@ -96,6 +100,9 @@ class Gui {
             System.out.println("Не удалось установить шрифт");
             e.printStackTrace();
         }
+
+        lvlLabel.setTextFill(Color.WHITE);
+        lvlLabel.setFont(Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),lvlLabelSize));
 
     }
 
@@ -170,6 +177,8 @@ class Gui {
                 if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(false);
                 else nextLvl.setDisable(true);
 
+                lvlLabel.setText(level.toString() + " уровень");
+                lvlLabel.setVisible(true);
                 nextLvl.setDisable(false);
                 reset.setDisable(false);
             }
@@ -196,6 +205,8 @@ class Gui {
 
             this.counter = 0;
             counterLabel.setText(counter.toString());
+            lvlLabel.setText(level.toString() + " уровень");
+            lvlLabel.setVisible(true);
         });
 
         nextLvl.setOnAction(event -> {
@@ -205,12 +216,16 @@ class Gui {
             if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
             this.counter = 0;
             counterLabel.setText(counter.toString());
+            lvlLabel.setText(level.toString() + " уровень");
+            lvlLabel.setVisible(true);
         });
 
         reset.setOnAction(event -> {
             loadLevel(level.toString(),grade);
             this.counter = 0;
             counterLabel.setText(counter.toString());
+            lvlLabel.setText(level.toString() + " уровень");
+            lvlLabel.setVisible(true);
         }
         );
 
@@ -317,7 +332,7 @@ class Gui {
         gameGrid.getChildren().clear();
         gameGrid.getColumnConstraints().clear();
         gameGrid.getRowConstraints().clear();
-        //gameGrid.setGridLinesVisible(true);
+        gameGrid.setGridLinesVisible(true);
         for(int i = 0; i< dimension; i++){
             double rowHeight = gameGrid.getPrefHeight() / dimension;
             double columnWidth = gameGrid.getPrefWidth() / dimension;
@@ -328,12 +343,11 @@ class Gui {
             int col = i/dimension;
             int row = i-col*dimension;
             Element item = list.get(i);
-            item.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-5);
-            item.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-5);
+            item.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-15);
+            item.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-15);
             item.getImageButton().setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
             item.getImageButton().setBackground(Background.EMPTY);
             gameGrid.add(item.getImageButton(),col,row);
-            gameGrid.setMargin(item.getImageButton(), new Insets(5));
             items.add(item);
         }
 
@@ -355,10 +369,5 @@ class Gui {
         }
     }
 
-//    public int checkElementStyle(){
-//        Random ra = new Random();
-//        if (ra.nextInt()%2 == 0)return 0;
-//        else return 1;
-//    }
 }
  
