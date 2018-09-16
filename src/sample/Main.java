@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -24,7 +26,7 @@ public class Main extends Application {
             System.out.println("Fail!");
         }
 
-        LvlGenerator.GenAll();
+        //LvlGenerator.GenAll();
         Helper.TestGetTip();
         primaryStage.getIcons().add(new Image("resources/icon.png"));
         width = Screen.getPrimary().getBounds().getWidth()*0.4;
@@ -44,9 +46,12 @@ public class Main extends Application {
             if(event.getCode() == KeyCode.RIGHT){
                 gui.getNextLvl().fire();
             }
-
             if(event.getCode() == KeyCode.LEFT){
                 gui.getPrevLvl().fire();
+            }
+
+            if(event.getCode() == KeyCode.F1){
+                gui.getHelp();
             }
 
         });

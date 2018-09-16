@@ -99,6 +99,14 @@ public class Helper {
         return -1;
     }
 
+    public static int GetTip(List<Element> list, int unused) {
+        List<Integer> field = new ArrayList<>();
+        for (Element el: list){
+            field.add(el.isRotated() ? 1 : 0);
+        }
+        return GetTip(field);
+    }
+
     public static List<Integer> GenField(int sideSize, int difficulty, int seed) {
         final int fieldSize = sideSize * sideSize;
         final int maxDifficulty = fieldSize + 1;

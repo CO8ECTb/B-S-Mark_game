@@ -1,5 +1,7 @@
 package sample;
 
+import com.sun.javafx.tk.Toolkit;
+import javafx.animation.FillTransition;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -7,11 +9,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
+
 import java.util.*;
 import java.lang.reflect.Field;
 
 class Gui {
+
     private Double width;
     private Double height;
     private Integer level = 1;
@@ -87,12 +93,23 @@ class Gui {
         return nextLvl;
     }
 
+    public void getHelp(){
+        Timer timer = new Timer();
+        items.get(Helper.GetTip(items,0)).getImageButton().setBackground(new Background(
+                new BackgroundFill(Color.YELLOW,new CornerRadii(25),Insets.EMPTY)));
+        timer.schedule(new TimerTask() {
+           @Override
+           public void run() {
+               items.get(Helper.GetTip(items,0)).getImageButton().setBackground(Background.EMPTY);
+           }
+        },500);
+    }
+
     public void setStyle(){
         headerBox.setId("header");
         body.setId("startBack");
         gameGrid.setAlignment(Pos.CENTER);
         headerBox.setAlignment(Pos.CENTER);
-
         footerButtons.setId("footer");
         root.getStylesheets().addAll(this.getClass().getResource("/style/style.css").toExternalForm());
         fontSize = (this.width/42);
