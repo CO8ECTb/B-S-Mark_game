@@ -58,14 +58,24 @@ public class Main extends Application {
             }
 
             if(event.getCode() == KeyCode.ESCAPE){
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Выход");
-                alert.setHeaderText("Вы точно хотите выйти?");
-                Optional<ButtonType> option = alert.showAndWait();
-                if(option.get() == ButtonType.OK) System.exit(1);
+                alertCloseMessage();
             }
 
         });
+        primaryStage.setOnCloseRequest(event -> {
+            alertCloseMessage();
+        });
+    }
+
+
+    public void alertCloseMessage(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Выход");
+        alert.setHeaderText("Вы точно хотите выйти?");
+        Optional<ButtonType> option = alert.showAndWait();
+        if(option.get() == ButtonType.OK) System.exit(1);
+
+
     }
 
 
