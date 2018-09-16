@@ -79,6 +79,14 @@ class Gui {
         return root;
     }
 
+    public Button getPrevLvl(){
+        return prevLvl;
+    }
+
+    public Button getNextLvl(){
+        return nextLvl;
+    }
+
     public void setStyle(){
         headerBox.setId("header");
         body.setId("startBack");
@@ -256,7 +264,7 @@ class Gui {
                     items.get(i).setActivity(false);
                 }
 
-                for(int i=0; i<list.size();++i){
+                for(int i = 0; i < list.size(); ++i){
                    items.get(list.get(i)).setActivity(true);
                 }
 
@@ -318,7 +326,7 @@ class Gui {
         return ids;
     }
 
-    public void loadLevel(String lvl, Integer grade){
+    private void loadLevel(String lvl, Integer grade){
         this.lvlView = SaveMaker.getLevelStyle(SaveMaker.ReadDataFromFile(lvl,grade));
         if(lvlView == 1)
         body.setId("back1");
@@ -327,12 +335,11 @@ class Gui {
     }
 
 
-    public void drawTask(List<Element> list, Integer dimension){
+    private void drawTask(List<Element> list, Integer dimension){
         items.clear();
         gameGrid.getChildren().clear();
         gameGrid.getColumnConstraints().clear();
         gameGrid.getRowConstraints().clear();
-        gameGrid.setGridLinesVisible(true);
         for(int i = 0; i< dimension; i++){
             double rowHeight = gameGrid.getPrefHeight() / dimension;
             double columnWidth = gameGrid.getPrefWidth() / dimension;
@@ -343,28 +350,32 @@ class Gui {
             int col = i/dimension;
             int row = i-col*dimension;
             Element item = list.get(i);
-            item.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-15);
-            item.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-15);
-            item.getImageButton().setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
-            item.getImageButton().setBackground(Background.EMPTY);
             gameGrid.add(item.getImageButton(),col,row);
             items.add(item);
         }
-
+        List<Integer> lightListIndex = getLight(items);
+        for(int j=0; j<lightListIndex.size();++j){
+            items.get(lightListIndex.get(j)).setActivity(true);
+        }
+        for(Element el: items) {
+            updateElementsSize(el);
+        }
         listen();
     }
 
-
-    public void reDrawTask(List<Element> items){
-        gameGrid.getChildren().clear();
-        gameGrid.getColumnConstraints().clear();
-        gameGrid.getRowConstraints().clear();
-        //gameGrid.setGridLinesVisible(true);
-        for(Element el:items){
+    private void updateElementsSize(Element el){
             el.getView().setFitHeight((gameGrid.getPrefHeight()/dimension)-15);
             el.getView().setFitWidth((gameGrid.getPrefWidth()/dimension)-15);
             el.getImageButton().setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
             el.getImageButton().setBackground(Background.EMPTY);
+    }
+
+    private void reDrawTask(List<Element> items){
+        gameGrid.getChildren().clear();
+        gameGrid.getColumnConstraints().clear();
+        gameGrid.getRowConstraints().clear();
+        for(Element el:items){
+            updateElementsSize(el);
             gameGrid.add(el.getImageButton(),el.getColumn(),el.getRow());
         }
     }

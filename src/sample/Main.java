@@ -3,6 +3,7 @@ package sample;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -38,6 +39,17 @@ public class Main extends Application {
         gui.setComponentsLook();
         primaryStage.setTitle("BS-Mark Game");
         primaryStage.show();
+
+        scene.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.RIGHT){
+                gui.getNextLvl().fire();
+            }
+
+            if(event.getCode() == KeyCode.LEFT){
+                gui.getPrevLvl().fire();
+            }
+
+        });
     }
 
 
