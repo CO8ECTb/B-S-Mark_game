@@ -95,7 +95,9 @@ class Gui {
 
     public void getHelp(){
         Timer timer = new Timer();
-        items.get(Helper.GetTip(items,0)).getImageButton().setBackground(new Background(
+        int nxtIdx = Helper.GetTip(items, 0);
+        if (nxtIdx < 0) return;
+        items.get(nxtIdx).getImageButton().setBackground(new Background(
                 new BackgroundFill(Color.YELLOW,new CornerRadii(25),Insets.EMPTY)));
         timer.schedule(new TimerTask() {
            @Override

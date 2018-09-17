@@ -47,6 +47,10 @@ public class Helper {
             }
         }
 
+        for (int i = 0; i < dstSize; ++i) {
+            --used[i];
+        }
+
         distribution = used;
     }
 
@@ -71,7 +75,7 @@ public class Helper {
     }
 
     public static int GetTip(List<Integer> field) {
-        final int fieldSize = field.size() - 1; // extra one that indicate style
+        final int fieldSize = field.size();
 
         int sideSize = 0;
         while (sideSize * sideSize < fieldSize) {
