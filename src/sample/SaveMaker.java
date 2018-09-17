@@ -11,6 +11,19 @@ public class SaveMaker {
     private final static String COMMON_SAVE_FOLDER = new File("saves").toString();
     private final static int MAX_SAVE_LEN = 4096;
 
+    private static byte GetByte(Integer x, int pos) {
+        x >>= 8 * pos;
+        x &= 255;
+        return x.byteValue();
+    }
+
+    private static int SetByte(Integer msk, byte x, int pos) {
+        int y = x;
+        y <<= 8 * pos;
+        msk |= y;
+        return msk;
+    }
+
     public static void InitSaveDirIfNeed(Integer grade) {
         File saveDir = new File(COMMON_SAVE_FOLDER, grade.toString());
         if (!saveDir.exists()) {
@@ -137,6 +150,108 @@ public class SaveMaker {
         return true;
     }
 
+    public static List<Integer> ReadLvlInfoFromFile(String filename, Integer grade) {
+        InitSaveDirIfNeed(grade);
+
+        File saveFolder = new File(COMMON_SAVE_FOLDER, grade.toString());
+        File file = new File(saveFolder, filename.concat(".sav.cur"));
+
+        List<Integer> data = new ArrayList<>();
+        try {
+            InputStream in = new BufferedInputStream(new FileInputStream(file));
+
+            byte[] bytes = new byte[MAX_SAVE_LEN];
+            int offset = 0;
+            int add = 0;
+            while ((add = in.read(bytes, offset, MAX_SAVE_LEN - offset)) != -1) {
+                offset += add;
+            }
+
+            int idx = 0;
+            if (offset % 4 != 0) {
+                throw new RuntimeException();
+            }
+
+            int mask = 0;
+            int hashSum = 0;
+            for (int i = 0; i < offset; ++i) {
+                mask = SetByte(mask, bytes[i], i % 4);
+                if (i % 4 == 3) {
+                    data.add(mask);
+                    hashSum ^= mask;
+                    mask = 0;
+                }
+            }
+
+            if (hashSum != 0) {
+                throw new RuntimeException();
+            }
+
+            data.remove(data.size() - 1);
+        }
+        catch (FileNotFoundException e) {
+            System.err.println("Такого файла не существует");
+        }
+        catch (IOException e) {
+            System.out.println("Ошибка чтения файла сохранений");
+        }
+        catch (NullPointerException e) {
+            System.err.println("Файл пустой");
+        }
+        catch (RuntimeException e) {
+            System.out.println("Файл сохранений поврежден");
+        }
+
+        return data;
+    }
+
+    public static boolean WriteLvlInfoToFile(List<Integer> info, Integer grade, String filename) {
+        InitSaveDirIfNeed(grade);
+
+        File saveForlder = new File(COMMON_SAVE_FOLDER, grade.toString());
+        File file = new File(saveForlder, filename.concat(".sav.cur"));
+//        System.out.println("FilePath save is: " + file);
+
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            byte[] bytes = new byte[MAX_SAVE_LEN];
+            Integer hashSum = 0;
+            int idx = 0;
+            for (Integer unit : info) {
+                hashSum ^= unit;
+                for (int i = 0; i < 4; ++i) {
+                    bytes[idx++] = GetByte(unit, i);
+                }
+            }
+
+            for (int i = 0; i < 4; ++i) {
+                bytes[idx++] = GetByte(hashSum, i);
+            }
+
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+            out.write(bytes, 0, idx);
+            out.flush();
+            out.close();
+        }
+        catch (RuntimeException e) {
+            System.out.println("Переданы неверные данные для сохранения");
+            return false;
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("Файл сохранения не найден");
+            return false;
+        }
+        catch (IOException e) {
+            System.out.println("Не удалось сохранить файл");
+            return false;
+        }
+        System.out.println("Успешно сохранено");
+        return true;
+    }
+
 
     public static boolean TestSaveMaker() {
         // gen data
@@ -163,8 +278,33 @@ public class SaveMaker {
                 return false;
             }
         }
-        return dataFromFile.get(dataFromFile.size() - 1) == style;
+        if (dataFromFile.get(dataFromFile.size() - 1) != style) {
+            return false;
+        }
+
+
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 11; ++i) {
+            list.add(i * 3);
+        }
+        if (!WriteLvlInfoToFile(list, grade, filename)) {
+            return false;
+        }
+
+        List<Integer> listFromFile = ReadLvlInfoFromFile(filename, grade);
+        if (listFromFile.size() != list.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < list.size(); ++i) {
+            if (list.get(i) != listFromFile.get(i)) {
+                return false;
+            }
+        }
+
+        return true;
     }
+
 
 
 
