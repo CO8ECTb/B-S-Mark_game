@@ -216,7 +216,7 @@ class Gui {
 
 
         prevLvl.setOnAction(event -> {
-            SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter),grade,level.toString());
+            SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter,lvlView),grade,level.toString());
             level--;
             System.out.println("prevlvl = "+level);
             if(level <= 1){
@@ -237,7 +237,7 @@ class Gui {
         });
 
         nextLvl.setOnAction(event -> {
-            SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter),grade,level.toString());
+            SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter,lvlView),grade,level.toString());
             level++;
             System.out.println("nextlvl = "+level);
             if(level > 1) prevLvl.setDisable(false);
@@ -358,8 +358,9 @@ class Gui {
 
     private void loadSaveLevel(String lvl, Integer grade){
         System.out.println("loadlvl = "+lvl);
-        this.lvlView = SaveMaker.getLevelStyle(SaveMaker.ReadDataFromFile(lvl,grade));
-        this.counter = SaveMaker.getCounter(SaveMaker.ReadLvlInfoFromFile(level.toString(),grade));
+        List<Integer> loadedData = SaveMaker.ReadLvlInfoFromFile(lvl, grade);
+        this.lvlView = SaveMaker.getLevelStyle(loadedData);
+        this.counter = SaveMaker.getCounter(loadedData);
         counterLabel.setText(counter.toString());
         if(lvlView == 1)
         body.setId("back1");

@@ -331,21 +331,30 @@ public class SaveMaker {
         return elements;
     }
 
-    public static List<Integer> parseElementCollection(List<Element> items, int counter){
+    public static List<Integer> parseElementCollection(List<Element> items, int counter, int style){
         List<Integer> list = new ArrayList<>();
         for(Element el: items){
             list.add(el.isRotated() ? 1 : 0);
         }
         list.add(counter);
+        list.add(style);
         return list;
     }
 
 
     public static Integer getLevelStyle(List<Integer> list){
+        if (list.size() < 1) {
+            System.out.println("list is empty");
+            return 0;
+        }
         return list.get(list.size()-1);
     }
 
     public static Integer getCounter(List<Integer> list){
-        return list.get(list.size()-1);
+        if (list.size() < 2) {
+            System.out.println("list size is less than 2");
+            return 0;
+        }
+        return list.get(list.size()-2);
     }
 }
