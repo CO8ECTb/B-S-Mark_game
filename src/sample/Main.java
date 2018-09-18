@@ -28,10 +28,6 @@ public class Main extends Application {
         } else {
             System.out.println("Fail!");
         }
-
-        //LvlGenerator.GenAll();
-//        Helper.TestGetTip();
-//        SaveMaker.TestSaveMaker();
         primaryStage.getIcons().add(new Image("resources/icon.png"));
         width = Screen.getPrimary().getBounds().getWidth()*0.4;
         height = Screen.getPrimary().getBounds().getHeight()*0.8;
@@ -75,8 +71,6 @@ public class Main extends Application {
         alert.setHeaderText("Вы точно хотите выйти?");
         Optional<ButtonType> option = alert.showAndWait();
         if(option.get() == ButtonType.OK) System.exit(1);
-
-
     }
 
 

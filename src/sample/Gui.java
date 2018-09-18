@@ -1,7 +1,5 @@
 package sample;
 
-import com.sun.javafx.tk.Toolkit;
-import javafx.animation.FillTransition;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -9,9 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-import javafx.util.Duration;
 
 import java.util.*;
 import java.lang.reflect.Field;
@@ -220,36 +216,41 @@ class Gui {
 
 
         prevLvl.setOnAction(event -> {
+            SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter),grade,level.toString());
             level--;
+            System.out.println("prevlvl = "+level);
             if(level <= 1){
                 prevLvl.setDisable(true);
             }
             else  prevLvl.setDisable(false);
             if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
             else nextLvl.setDisable(false);
-            loadLevel(level.toString(),grade);
 
-            this.counter = 0;
-            counterLabel.setText(counter.toString());
-            lvlLabel.setText(level.toString() + " уровень");
+
+            //lvlLabel.setText(level.toString() + " уровень");
             lvlLabel.setVisible(true);
+            if(SaveMaker.isFile(level.toString(),grade)){
+                loadSaveLevel(level.toString(),grade);
+            } else {
+                loadLevel(level.toString(),grade);
+            }
         });
 
         nextLvl.setOnAction(event -> {
+            SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter),grade,level.toString());
             level++;
+            System.out.println("nextlvl = "+level);
             if(level > 1) prevLvl.setDisable(false);
-            loadLevel(level.toString(),grade);
             if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
-            this.counter = 0;
-            counterLabel.setText(counter.toString());
-            lvlLabel.setText(level.toString() + " уровень");
+            //lvlLabel.setText(level.toString() + " уровень");
             lvlLabel.setVisible(true);
+            if(SaveMaker.isFile(level.toString(),grade)){
+                loadSaveLevel(level.toString(),grade);
+            } else loadLevel(level.toString(),grade);
         });
 
         reset.setOnAction(event -> {
             loadLevel(level.toString(),grade);
-            this.counter = 0;
-            counterLabel.setText(counter.toString());
             lvlLabel.setText(level.toString() + " уровень");
             lvlLabel.setVisible(true);
         }
@@ -285,9 +286,14 @@ class Gui {
                 }
 
                 if(checkWin(items)){
-
+                    for(Element element: items){
+                        element.getButton().setDisable(true);
+                        updateElementsSize(element);
+                    }
+                    lvlLabel.setText(level + " уровень пройден");
+                } else{
+                    reDrawTask(items);
                 }
-                reDrawTask(items);
             });
         }
     }
@@ -341,11 +347,31 @@ class Gui {
     }
 
     private void loadLevel(String lvl, Integer grade){
+        this.counter = 0;
+        counterLabel.setText(counter.toString());
         this.lvlView = SaveMaker.getLevelStyle(SaveMaker.ReadDataFromFile(lvl,grade));
         if(lvlView == 1)
         body.setId("back1");
         else body.setId("back2");
         drawTask(SaveMaker.parseCollection(SaveMaker.ReadDataFromFile(lvl,grade),dimension),dimension);
+    }
+
+    private void loadSaveLevel(String lvl, Integer grade){
+        System.out.println("loadlvl = "+lvl);
+        this.lvlView = SaveMaker.getLevelStyle(SaveMaker.ReadDataFromFile(lvl,grade));
+        this.counter = SaveMaker.getCounter(SaveMaker.ReadLvlInfoFromFile(level.toString(),grade));
+        counterLabel.setText(counter.toString());
+        if(lvlView == 1)
+        body.setId("back1");
+        else body.setId("back2");
+        //items.clear();
+        items = SaveMaker.parseCollection(SaveMaker.ReadLvlInfoFromFile(level.toString(),grade),dimension);
+        if(checkWin(items)){
+            lvlLabel.setText(level + " уровень пройден!");
+        } else lvlLabel.setText(level + " уровень");
+        drawTask(SaveMaker.parseCollection(SaveMaker.ReadLvlInfoFromFile(level.toString(),grade),dimension),dimension);
+        //reDrawTask(items);
+
     }
 
 
@@ -354,7 +380,7 @@ class Gui {
         gameGrid.getChildren().clear();
         gameGrid.getColumnConstraints().clear();
         gameGrid.getRowConstraints().clear();
-        for(int i = 0; i< dimension; i++){
+        for(int i = 0; i < dimension; i++){
             double rowHeight = gameGrid.getPrefHeight() / dimension;
             double columnWidth = gameGrid.getPrefWidth() / dimension;
             gameGrid.getRowConstraints().add(new RowConstraints(rowHeight));

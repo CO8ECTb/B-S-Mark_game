@@ -1,5 +1,7 @@
 package sample;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,14 @@ public class SaveMaker {
         if (!saveDir.exists()) {
             saveDir.mkdirs();
         }
+    }
+
+
+    public static Boolean isFile(String filename, Integer grade){
+        File saveFolder = new File(COMMON_SAVE_FOLDER, grade.toString());
+        File file = new File(saveFolder, filename.concat(".sav.cur"));
+        if(file.isFile()) return true;
+        else return false;
     }
 
     public static List<Integer> ReadDataFromFile(String filename, Integer grade) {
@@ -321,8 +331,21 @@ public class SaveMaker {
         return elements;
     }
 
+    public static List<Integer> parseElementCollection(List<Element> items, int counter){
+        List<Integer> list = new ArrayList<>();
+        for(Element el: items){
+            list.add(el.isRotated() ? 1 : 0);
+        }
+        list.add(counter);
+        return list;
+    }
+
 
     public static Integer getLevelStyle(List<Integer> list){
+        return list.get(list.size()-1);
+    }
+
+    public static Integer getCounter(List<Integer> list){
         return list.get(list.size()-1);
     }
 }

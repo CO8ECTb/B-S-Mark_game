@@ -60,6 +60,10 @@ public class Element{
         return imageButton;
     }
 
+    public Button getButton(){
+        return imageButton;
+    }
+
     public boolean isActivity() {
         return activity;
     }
