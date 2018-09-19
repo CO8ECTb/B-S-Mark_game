@@ -233,7 +233,11 @@ class Gui {
             gameGrid.getColumnConstraints().clear();
             gameGrid.getRowConstraints().clear();
 
-            loadLevel(level.toString(),grade);
+            if(SaveMaker.isFile(level.toString(),grade)){
+                loadSaveLevel(level.toString(),grade);
+            } else {
+                loadLevel(level.toString(),grade);
+            }
         });
 
 
