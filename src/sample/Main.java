@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.event.Event;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -11,9 +12,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -55,25 +53,24 @@ public class Main extends Application {
             }
 
             if(event.getCode() == KeyCode.ESCAPE){
-                alertCloseMessage();
+                alertCloseMessage(event);
             }
 
         });
         primaryStage.setOnCloseRequest(event -> {
-            alertCloseMessage();
+            alertCloseMessage(event);
         });
     }
 
 
-    public void alertCloseMessage(){
+    public void alertCloseMessage(Event event){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Выход");
         alert.setHeaderText("Вы точно хотите выйти?");
         Optional<ButtonType> option = alert.showAndWait();
-        if(option.get() == ButtonType.OK) System.exit(1);
+        if(option.get() == ButtonType.OK) System.exit(0);
+        else event.consume();
     }
-
-
 
 
     public static void main(String[] args) {

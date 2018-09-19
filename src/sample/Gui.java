@@ -216,18 +216,16 @@ class Gui {
 
 
         prevLvl.setOnAction(event -> {
+            reset.setDisable(false);
             SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter,lvlView),grade,level.toString());
             level--;
-            System.out.println("prevlvl = "+level);
             if(level <= 1){
                 prevLvl.setDisable(true);
             }
             else  prevLvl.setDisable(false);
             if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
             else nextLvl.setDisable(false);
-
-
-            //lvlLabel.setText(level.toString() + " уровень");
+            lvlLabel.setText(level.toString() + " уровень");
             lvlLabel.setVisible(true);
             if(SaveMaker.isFile(level.toString(),grade)){
                 loadSaveLevel(level.toString(),grade);
@@ -237,12 +235,12 @@ class Gui {
         });
 
         nextLvl.setOnAction(event -> {
+            reset.setDisable(false);
             SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter,lvlView),grade,level.toString());
             level++;
-            System.out.println("nextlvl = "+level);
             if(level > 1) prevLvl.setDisable(false);
             if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
-            //lvlLabel.setText(level.toString() + " уровень");
+            lvlLabel.setText(level.toString() + " уровень");
             lvlLabel.setVisible(true);
             if(SaveMaker.isFile(level.toString(),grade)){
                 loadSaveLevel(level.toString(),grade);
@@ -284,26 +282,24 @@ class Gui {
                 for(int i = 0; i < list.size(); ++i){
                    items.get(list.get(i)).setActivity(true);
                 }
-
-                if(checkWin(items)){
-                    for(Element element: items){
-                        element.getButton().setDisable(true);
-                        updateElementsSize(element);
-                    }
-                    lvlLabel.setText(level + " уровень пройден");
-                } else{
-                    reDrawTask(items);
-                }
+                checkWin(items);
+                if(!checkWin(items))reDrawTask(items);
             });
         }
     }
 
     private boolean checkWin(List<Element> list){
-        //Проверяет на активность все элементы
+        //Проверяет все ли элементы повернуты на 90 градусов
         //и возвращает true, если пользователь победил
         for(int i=0; i<dimension*dimension;++i){
-            if(!list.get(i).isActivity()) return false;
+            if(!list.get(i).isRotated()) return false;
         }
+        for(Element element: items){
+            element.getButton().setDisable(true);
+            updateElementsSize(element);
+        }
+        lvlLabel.setText(level + " уровень пройден");
+        reset.setDisable(true);
         return true;
     }
 
@@ -357,7 +353,6 @@ class Gui {
     }
 
     private void loadSaveLevel(String lvl, Integer grade){
-        System.out.println("loadlvl = "+lvl);
         List<Integer> loadedData = SaveMaker.ReadLvlInfoFromFile(lvl, grade);
         this.lvlView = SaveMaker.getLevelStyle(loadedData);
         this.counter = SaveMaker.getCounter(loadedData);
@@ -365,14 +360,13 @@ class Gui {
         if(lvlView == 1)
         body.setId("back1");
         else body.setId("back2");
-        //items.clear();
         items = SaveMaker.parseCollection(SaveMaker.ReadLvlInfoFromFile(level.toString(),grade),dimension);
-        if(checkWin(items)){
-            lvlLabel.setText(level + " уровень пройден!");
-        } else lvlLabel.setText(level + " уровень");
+//        for(Element el: items){
+//            System.out.println("col="+el.getColumn()+" row= "+el.getRow()+" rot= "+el.isRotated()+" act="+el.isActivity());
+//        }
         drawTask(SaveMaker.parseCollection(SaveMaker.ReadLvlInfoFromFile(level.toString(),grade),dimension),dimension);
-        //reDrawTask(items);
-
+        checkWin(items);
+        if(!checkWin(items)) lvlLabel.setText(level + " уровень");
     }
 
 
@@ -391,6 +385,7 @@ class Gui {
             int col = i/dimension;
             int row = i-col*dimension;
             Element item = list.get(i);
+            item.getButton().setDisable(false);
             gameGrid.add(item.getImageButton(),col,row);
             items.add(item);
         }
