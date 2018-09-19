@@ -13,7 +13,6 @@ import java.util.*;
 import java.lang.reflect.Field;
 
 class Gui {
-
     private Double width;
     private Double height;
     private Integer level = 1;
@@ -87,6 +86,10 @@ class Gui {
 
     public Button getNextLvl(){
         return nextLvl;
+    }
+
+    public Integer getLevel() {
+        return level;
     }
 
     public void getHelp(){
@@ -187,24 +190,43 @@ class Gui {
         buttonsGrid.add(nextLvl,3,0);
         buttonsGrid.add(reset,4,0);
         buttonsGrid.add(counterLabel,5,0);
+        buttonsGrid.getChildren().get(1).requestFocus();
 
-        reset.setDisable(true);
-        prevLvl.setDisable(true);
-        nextLvl.setDisable(true);
+//        reset.setDisable(true);
+//        prevLvl.setDisable(true);
+//        nextLvl.setDisable(true);
+
+        reset.setVisible(false);
+        prevLvl.setVisible(false);
+        nextLvl.setVisible(false);
 
         classChoiseBox.setOnAction(event -> {
-            if(reset.isDisable() || prevLvl.isDisable() || nextLvl.isDisable()){
-                if(level != 1) prevLvl.setDisable(false);
-                else prevLvl.setDisable(true);
+//            if(reset.isDisable() || prevLvl.isDisable() || nextLvl.isDisable()){
+//                if(level != 1) prevLvl.setDisable(false);
+//                else prevLvl.setDisable(true);
+//
+//                if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(false);
+//                else nextLvl.setDisable(true);
+//
+//                lvlLabel.setText(level.toString() + " уровень");
+//                lvlLabel.setVisible(true);
+//                nextLvl.setDisable(false);
+//                reset.setDisable(false);
+//            }
 
-                if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(false);
-                else nextLvl.setDisable(true);
+            if(!reset.isVisible() || !prevLvl.isVisible() || !nextLvl.isVisible()){
+                if(level != 1) prevLvl.setVisible(true);
+                else prevLvl.setVisible(false);
+
+                if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setVisible(true);
+                else nextLvl.setVisible(false);
 
                 lvlLabel.setText(level.toString() + " уровень");
                 lvlLabel.setVisible(true);
-                nextLvl.setDisable(false);
-                reset.setDisable(false);
+                nextLvl.setVisible(true);
+                reset.setVisible(true);
             }
+
             classChoiseBox.setDisable(true);
             grade = Integer.parseInt(classChoiseBox.getValue());
             gameGrid.getChildren().clear();
@@ -219,12 +241,20 @@ class Gui {
             reset.setDisable(false);
             SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter,lvlView),grade,level.toString());
             level--;
+//            if(level <= 1){
+//                prevLvl.setDisable(true);
+//            }
+//            else  prevLvl.setDisable(false);
+//            if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
+//            else nextLvl.setDisable(false);
+
             if(level <= 1){
-                prevLvl.setDisable(true);
+                prevLvl.setVisible(false);
             }
-            else  prevLvl.setDisable(false);
-            if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
-            else nextLvl.setDisable(false);
+            else  prevLvl.setVisible(true);
+            if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setVisible(false);
+            else nextLvl.setVisible(true);
+
             lvlLabel.setText(level.toString() + " уровень");
             lvlLabel.setVisible(true);
             if(SaveMaker.isFile(level.toString(),grade)){
@@ -238,8 +268,12 @@ class Gui {
             reset.setDisable(false);
             SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter,lvlView),grade,level.toString());
             level++;
-            if(level > 1) prevLvl.setDisable(false);
-            if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
+//            if(level > 1) prevLvl.setDisable(false);
+//            if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
+
+            if(level > 1) prevLvl.setVisible(true);
+            if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setVisible(false);
+
             lvlLabel.setText(level.toString() + " уровень");
             lvlLabel.setVisible(true);
             if(SaveMaker.isFile(level.toString(),grade)){
@@ -262,11 +296,17 @@ class Gui {
                 el.clickAction();
                 if(counter<9999) counter++;
 
-                if(level != 1) prevLvl.setDisable(false);
-                else prevLvl.setDisable(true);
+//                if(level != 1) prevLvl.setDisable(false);
+//                else prevLvl.setDisable(true);
+//
+//                if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(false);
+//                else nextLvl.setDisable(true);
 
-                if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(false);
-                else nextLvl.setDisable(true);
+                if(level != 1) prevLvl.setVisible(true);
+                else prevLvl.setVisible(false);
+
+                if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setVisible(true);
+                else nextLvl.setVisible(false);
 
                 counterLabel.setText(counter.toString());
 

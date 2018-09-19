@@ -21,11 +21,7 @@ public class Main extends Application {
     private VBox root;
     @Override
     public void start(Stage primaryStage) throws Exception{
-        if (SaveMaker.TestSaveMaker()) {
-            System.out.println("Success!");
-        } else {
-            System.out.println("Fail!");
-        }
+        LvlGenerator.GenAll();
         primaryStage.getIcons().add(new Image("resources/icon.png"));
         width = Screen.getPrimary().getBounds().getWidth()*0.4;
         height = Screen.getPrimary().getBounds().getHeight()*0.8;
@@ -39,18 +35,21 @@ public class Main extends Application {
         gui.setComponentsLook();
         primaryStage.setTitle("BS-Mark Game");
         primaryStage.show();
-
-        scene.setOnKeyPressed(event -> {
+        scene.setOnKeyReleased(event -> {
             if(event.getCode() == KeyCode.RIGHT){
+                if(gui.getLevel() < LvlGenerator.GetLvlCountByGrade(0))
                 gui.getNextLvl().fire();
             }
             if(event.getCode() == KeyCode.LEFT){
+                if(gui.getLevel() > 1 )
                 gui.getPrevLvl().fire();
             }
 
             if(event.getCode() == KeyCode.F1){
                 gui.getHelp();
             }
+
+            System.out.println(event.getCode());
 
             if(event.getCode() == KeyCode.ESCAPE){
                 alertCloseMessage(event);
