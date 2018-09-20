@@ -7,18 +7,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.Pair;
-
-import java.util.List;
 import java.util.Optional;
-
-import static sample.Stats.GetColorsAndScores;
-import static sample.Stats.GetScoreForGrade;
 
 
 public class Main extends Application {

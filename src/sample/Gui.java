@@ -1,13 +1,14 @@
 package sample;
 
+import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.lang.reflect.Field;
@@ -19,16 +20,18 @@ class Gui {
     private Double headerHeight,buttonsHeight;
     private VBox root, body;
     private HBox headerBox;
-    private GridPane gameGrid, buttonsGrid;
+    private GridPane gameGrid, buttonsGrid, footerGrid;
     private HBox footerButtons;
     private ChoiceBox<String> classChoiseBox;
     private Button prevLvl, nextLvl, reset,quit, cheatButton;
     private List<Element> items = new ArrayList<>();
+    private List<Button> levelButton = new ArrayList<>();
     private static final Integer firstLvl = 1;
     private static final Integer secondLvl = 2;
     private static final Integer thirdLvl = 3;
     private static final Integer fourthLvl = 4;
     private final Integer dimension = 4;
+    private Integer score = 0;
     private Integer grade;
     private Integer counter = 0;
     private Label counterLabel = new Label(counter.toString());
@@ -49,11 +52,14 @@ class Gui {
 
 
     public void skeleton(){
+
         root = new VBox();
         headerBox = new HBox();
         body = new VBox();
         gameGrid = new GridPane();
+        footerGrid = new GridPane();
         buttonsGrid = new GridPane();
+
         buttonsGrid.setMaxWidth(width-10);
         buttonsGrid.setMinWidth(width*0.95);
         buttonsGrid.setAlignment(Pos.CENTER);
@@ -69,8 +75,20 @@ class Gui {
         gameGrid.setPrefWidth(width*0.9);
         gameGrid.setMaxHeight(height-(2*headerHeight+buttonsHeight)+12);
         gameGrid.setMinHeight(height-(2*headerHeight+buttonsHeight)+12);
+
         footerButtons = new HBox();
         footerButtons.setPrefHeight(headerHeight);
+
+
+
+        footerGrid.setPrefHeight(headerHeight-2);
+        footerGrid.setMaxHeight(headerHeight-2);
+        footerGrid.setMinHeight(headerHeight-2);
+        footerGrid.setPrefWidth(width);
+        footerGrid.setMaxWidth(width);
+        footerGrid.setMinWidth(width);
+        footerButtons.getChildren().add(footerGrid);
+
         root.getChildren().add(0,headerBox);
         root.getChildren().add(1,body);
         root.getChildren().add(2,footerButtons);
@@ -110,6 +128,7 @@ class Gui {
         headerBox.setId("header");
         body.setId("startBack");
         gameGrid.setAlignment(Pos.CENTER);
+        footerGrid.setAlignment(Pos.CENTER);
         headerBox.setAlignment(Pos.CENTER);
         footerButtons.setId("footer");
         root.getStylesheets().addAll(this.getClass().getResource("/style/style.css").toExternalForm());
@@ -141,14 +160,14 @@ class Gui {
         classChoiseBox = new ChoiceBox<>(FXCollections.observableArrayList(firstLvl.toString(), secondLvl.toString(),thirdLvl.toString(),fourthLvl.toString()));
 
         //Кнопка пред лвл
-        prevLvl = new Button("<-");
+        prevLvl = new Button("<=");
         prevLvl.setMaxWidth(Double.MAX_VALUE);
         GridPane.setHgrow(prevLvl, Priority.ALWAYS);
         GridPane.setVgrow(prevLvl, Priority.ALWAYS);
         GridPane.setMargin(prevLvl, new Insets(8));
 
         //Кнопка след лвл
-        nextLvl = new Button("->");
+        nextLvl = new Button("=>");
         nextLvl.setMaxWidth(Double.MAX_VALUE);
         GridPane.setHgrow(nextLvl, Priority.ALWAYS);
         GridPane.setVgrow(nextLvl, Priority.ALWAYS);
@@ -169,51 +188,93 @@ class Gui {
         counterLabel.setTextFill(Color.WHITE);
         buttonsGrid.setHalignment(counterLabel, HPos.RIGHT);
 
-        ColumnConstraints col0 = new ColumnConstraints();
-        ColumnConstraints col1 = new ColumnConstraints();
-        ColumnConstraints col2 = new ColumnConstraints();
-        ColumnConstraints col3 = new ColumnConstraints();
-        ColumnConstraints col4 = new ColumnConstraints();
-        ColumnConstraints col5 = new ColumnConstraints();
+        ColumnConstraints controlCol0 = new ColumnConstraints();
+        ColumnConstraints controlCol1 = new ColumnConstraints();
+        ColumnConstraints controlCol2 = new ColumnConstraints();
+        ColumnConstraints controlCol3 = new ColumnConstraints();
+        ColumnConstraints controlCol4 = new ColumnConstraints();
+        ColumnConstraints controlCol5 = new ColumnConstraints();
 
-        col0.setPercentWidth(11);
-        col1.setPercentWidth(12);
-        col2.setPercentWidth(18);
-        col3.setPercentWidth(18);
-        col4.setPercentWidth(20);
-        col5.setPercentWidth(20);
+        controlCol0.setPercentWidth(11);
+        controlCol1.setPercentWidth(12);
+        controlCol2.setPercentWidth(18);
+        controlCol3.setPercentWidth(18);
+        controlCol4.setPercentWidth(20);
+        controlCol5.setPercentWidth(20);
 
-        buttonsGrid.getColumnConstraints().addAll(col0,col1,col2,col3,col4,col5);
+        buttonsGrid.getColumnConstraints().addAll(controlCol0,controlCol1,controlCol2,controlCol3,controlCol4,controlCol5);
         buttonsGrid.add(labelComplexity,0,0);
         buttonsGrid.add(classChoiseBox,1,0);
         buttonsGrid.add(prevLvl,2,0);
         buttonsGrid.add(nextLvl,3,0);
         buttonsGrid.add(reset,4,0);
         buttonsGrid.add(counterLabel,5,0);
-        buttonsGrid.getChildren().get(1).requestFocus();
-
-//        reset.setDisable(true);
-//        prevLvl.setDisable(true);
-//        nextLvl.setDisable(true);
 
         reset.setVisible(false);
         prevLvl.setVisible(false);
         nextLvl.setVisible(false);
 
-        classChoiseBox.setOnAction(event -> {
-//            if(reset.isDisable() || prevLvl.isDisable() || nextLvl.isDisable()){
-//                if(level != 1) prevLvl.setDisable(false);
-//                else prevLvl.setDisable(true);
-//
-//                if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(false);
-//                else nextLvl.setDisable(true);
-//
-//                lvlLabel.setText(level.toString() + " уровень");
-//                lvlLabel.setVisible(true);
-//                nextLvl.setDisable(false);
-//                reset.setDisable(false);
-//            }
+        RowConstraints footerRow0 = new RowConstraints();
+        ColumnConstraints footerCol0 = new ColumnConstraints();
+        ColumnConstraints footerCol1 = new ColumnConstraints();
+        ColumnConstraints footerCol2 = new ColumnConstraints();
+        ColumnConstraints footerCol3 = new ColumnConstraints();
+        ColumnConstraints footerCol4 = new ColumnConstraints();
+        ColumnConstraints footerCol5 = new ColumnConstraints();
+        ColumnConstraints footerCol6 = new ColumnConstraints();
+        ColumnConstraints footerCol7 = new ColumnConstraints();
 
+        footerRow0.setMaxHeight(footerGrid.getMaxHeight());
+        footerCol0.setPercentWidth(7);
+        footerCol1.setPercentWidth(7);
+        footerCol2.setPercentWidth(7);
+        footerCol3.setPercentWidth(7);
+        footerCol4.setPercentWidth(7);
+        footerCol5.setPercentWidth(7);
+        footerCol6.setPercentWidth(7);
+        footerCol7.setPercentWidth(35);
+
+        footerCol0.setHalignment(HPos.CENTER);
+        footerCol1.setHalignment(HPos.CENTER);
+        footerCol2.setHalignment(HPos.CENTER);
+        footerCol3.setHalignment(HPos.CENTER);
+        footerCol4.setHalignment(HPos.CENTER);
+        footerCol5.setHalignment(HPos.CENTER);
+        footerCol6.setHalignment(HPos.CENTER);
+
+        footerGrid.getColumnConstraints().addAll(footerCol0,footerCol1,footerCol2,footerCol3,footerCol4,footerCol5,footerCol6,footerCol7);
+        footerGrid.getRowConstraints().add(footerRow0);
+
+
+        for(int i=0; i<LvlGenerator.GetLvlCountByGrade(1)+1;++i){
+            Button levelNumber = new Button((i+1)+"");
+            levelNumber.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+            levelNumber.setAlignment(Pos.CENTER);
+            levelNumber.setTextFill(Color.WHITESMOKE);
+            levelNumber.setBackground(Background.EMPTY);
+//            levelNumber.setBackground(new Background(
+//                    new BackgroundFill(Color.GREY,new CornerRadii(1),Insets.EMPTY)));
+            levelNumber.setStyle("-fx-border-color: #ffffff");
+            if(i == LvlGenerator.GetLvlCountByGrade(1)){
+                levelNumber.setStyle("-fx-border-color: NONE");
+                levelNumber.setTextFill(Color.WHITE);
+                levelNumber.setText("       Результат: " + score);
+            }
+
+            footerGrid.add(levelNumber,i,0);
+            levelButton.add(levelNumber);
+        }
+
+//        levelButton.get(3).setBackground(new Background(
+//                new BackgroundFill(Color.LIGHTGREEN,new CornerRadii(1),Insets.EMPTY)));
+//
+//        levelButton.get(1).setBackground(new Background(
+//                new BackgroundFill(Color.GREEN,new CornerRadii(1),Insets.EMPTY)));
+//        levelButton.get(4).setBackground(new Background(
+//                new BackgroundFill(Color.DARKGREEN,new CornerRadii(1),Insets.EMPTY)));
+
+
+        classChoiseBox.setOnAction(event -> {
             if(!reset.isVisible() || !prevLvl.isVisible() || !nextLvl.isVisible()){
                 if(level != 1) prevLvl.setVisible(true);
                 else prevLvl.setVisible(false);
@@ -233,11 +294,14 @@ class Gui {
             gameGrid.getColumnConstraints().clear();
             gameGrid.getRowConstraints().clear();
 
+            loadSaveLevelColor(levelButton,grade);
+
             if(SaveMaker.isFile(level.toString(),grade)){
                 loadSaveLevel(level.toString(),grade);
             } else {
                 loadLevel(level.toString(),grade);
             }
+
         });
 
 
@@ -245,12 +309,6 @@ class Gui {
             reset.setDisable(false);
             SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter,lvlView),grade,level.toString());
             level--;
-//            if(level <= 1){
-//                prevLvl.setDisable(true);
-//            }
-//            else  prevLvl.setDisable(false);
-//            if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
-//            else nextLvl.setDisable(false);
 
             if(level <= 1){
                 prevLvl.setVisible(false);
@@ -272,8 +330,6 @@ class Gui {
             reset.setDisable(false);
             SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter,lvlView),grade,level.toString());
             level++;
-//            if(level > 1) prevLvl.setDisable(false);
-//            if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(true);
 
             if(level > 1) prevLvl.setVisible(true);
             if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setVisible(false);
@@ -289,8 +345,7 @@ class Gui {
             loadLevel(level.toString(),grade);
             lvlLabel.setText(level.toString() + " уровень");
             lvlLabel.setVisible(true);
-        }
-        );
+        });
     }
 
 
@@ -299,12 +354,6 @@ class Gui {
             el.getImageButton().setOnMouseClicked(event -> {
                 el.clickAction();
                 if(counter<9999) counter++;
-
-//                if(level != 1) prevLvl.setDisable(false);
-//                else prevLvl.setDisable(true);
-//
-//                if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setDisable(false);
-//                else nextLvl.setDisable(true);
 
                 if(level != 1) prevLvl.setVisible(true);
                 else prevLvl.setVisible(false);
@@ -413,6 +462,28 @@ class Gui {
         if(!checkWin(items)) lvlLabel.setText(level + " уровень");
     }
 
+
+    private void loadSaveLevelColor(List<Button> list ,Integer grade){
+        List<Pair<Integer, Integer>> l = Stats.GetColorsAndScores(Stats.GetScoreForGrade(grade),grade);
+        int color, score;
+        for(int i=0; i<list.size();++i) {
+            color = l.get(i).getKey();
+            score = l.get(i).getValue();
+            this.score = this.score + score;
+            switch (color){
+                case 3: list.get(i).setBackground(new Background(
+                        new BackgroundFill(Color.DARKGREEN,new CornerRadii(1),Insets.EMPTY)));
+
+                case 2: list.get(i).setBackground(new Background(
+                        new BackgroundFill(Color.GREEN,new CornerRadii(1),Insets.EMPTY)));
+
+                case 1: list.get(i).setBackground(new Background(
+                        new BackgroundFill(Color.LIGHTGREEN,new CornerRadii(1),Insets.EMPTY)));
+
+                default:list.get(i).setBackground(Background.EMPTY);
+            }
+        }
+    }
 
     private void drawTask(List<Element> list, Integer dimension){
         items.clear();
