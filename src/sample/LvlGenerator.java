@@ -19,8 +19,16 @@ public class LvlGenerator {
         {342356, 5656, 76788, 456456, 564563, 45233452, 35234345}
     };
 
+    public static int GetLvlDiff(int grade, int lvl) {
+        return DIFF[grade][lvl];
+    }
+
     public static int GetLvlCountByGrade(int grade) {
         return LVLS;
+    }
+
+    public static int GetGradeCount() {
+        return GRADES;
     }
 
     public static void GenAll() {

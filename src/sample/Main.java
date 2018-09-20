@@ -12,7 +12,13 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+
+import java.util.List;
 import java.util.Optional;
+
+import static sample.Stats.GetColorsAndScores;
+import static sample.Stats.GetScoreForGrade;
 
 
 public class Main extends Application {
@@ -22,6 +28,17 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         LvlGenerator.GenAll();
+
+        /*
+        SAMPLE for getColors
+
+        List<Pair<Integer, Integer>> colorsAndScores = Stats.GetColorsAndScores(Stats.GetScoreForGrade(1), 1);
+        for (int i = 0; i < colorsAndScores.size(); ++i) {
+            System.out.println(colorsAndScores.get(i).getKey() + " " + colorsAndScores.get(i).getValue());
+        }
+
+        */
+
         primaryStage.getIcons().add(new Image("resources/icon.png"));
         width = Screen.getPrimary().getBounds().getWidth()*0.4;
         height = Screen.getPrimary().getBounds().getHeight()*0.8;
