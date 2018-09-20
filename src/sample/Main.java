@@ -58,8 +58,6 @@ public class Main extends Application {
                 gui.getHelp();
             }
 
-            System.out.println(event.getCode());
-
             if(event.getCode() == KeyCode.ESCAPE){
                 alertCloseMessage(event);
             }

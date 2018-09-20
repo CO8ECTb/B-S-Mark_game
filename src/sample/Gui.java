@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
@@ -67,14 +69,17 @@ class Gui {
         body.getChildren().add(buttonsGrid);
 
         headerBox.setPrefHeight(headerHeight);
-
-        body.getChildren().add(gameGrid);
         lvlLabel.setVisible(false);
         headerBox.getChildren().add(lvlLabel);
         gameGrid.setPrefHeight(height-(2*headerHeight+buttonsHeight)+12);
         gameGrid.setPrefWidth(width*0.9);
         gameGrid.setMaxHeight(height-(2*headerHeight+buttonsHeight)+12);
         gameGrid.setMinHeight(height-(2*headerHeight+buttonsHeight)+12);
+
+        body.setPrefHeight(height-(2*headerHeight)+12);
+        body.setPrefWidth(width*0.9);
+        body.setMaxHeight(height-(2*headerHeight)+12);
+        body.setMinHeight(height-(2*headerHeight)+12);
 
         footerButtons = new HBox();
         footerButtons.setPrefHeight(headerHeight);
@@ -154,20 +159,83 @@ class Gui {
     public void setComponentsLook(){
 
         Label labelComplexity = new Label("Класс: ");
-        labelComplexity.setTextFill(Color.WHITE);
+        TextArea rools = new TextArea();
+        rools.setEditable(false);
+        rools.setCursor(null);
+        rools.setPrefWidth(width);
+        rools.setPrefHeight(height-(2*headerHeight+buttonsHeight)+12);
+        rools.setBackground(Background.EMPTY);
 
+        rools.skinProperty().addListener(new ChangeListener<Skin<?>>() {
+
+            @Override
+            public void changed(
+                    ObservableValue<? extends Skin<?>> ov, Skin<?> t, Skin<?> t1) {
+                if (t1 != null && t1.getNode() instanceof Region) {
+                    Region r = (Region) t1.getNode();
+                    r.setBackground(Background.EMPTY);
+
+                    r.getChildrenUnmodifiable().stream().
+                            filter(n -> n instanceof Region).
+                            map(n -> (Region) n).
+                            forEach(n -> n.setBackground(Background.EMPTY));
+
+                    r.getChildrenUnmodifiable().stream().
+                            filter(n -> n instanceof Control).
+                            map(n -> (Control) n).
+                            forEach(c -> c.skinProperty().addListener(this)); // *
+                }
+            }
+        });
+
+        rools.setText("Тут должны быть правила, но, раз уж их нет,\n" +
+                " то тут будет стихотворение!\n \n " +
+                "   Духовной жаждою томим,\n" +
+                "   В пустыне мрачной я влачился, —\n" +
+                "   И шестикрылый серафим\n" +
+                "   На перепутье мне явился.\n" +
+                "   Перстами легкими как сон\n" +
+                "   Моих зениц коснулся он.\n" +
+                "   Отверзлись вещие зеницы,\n" +
+                "   Как у испуганной орлицы.\n" +
+                "   Моих ушей коснулся он, —\n" +
+                "   И их наполнил шум и звон:\n" +
+                "   И внял я неба содроганье,\n" +
+                "   И горний ангелов полет,\n" +
+                "   И гад морских подводный ход,\n" +
+                "   И дольней лозы прозябанье.\n" +
+                "   И он к устам моим приник,\n" +
+                "   И вырвал грешный мой язык,\n" +
+                "   И празднословный и лукавый,\n" +
+                "   И жало мудрыя змеи\n" +
+                "   В уста замершие мои\n" +
+                "   Вложил десницею кровавой.\n" +
+                "   И он мне грудь рассек мечом,\n" +
+                "   И сердце трепетное вынул,\n" +
+                "   И угль, пылающий огнем,\n" +
+                "   Во грудь отверстую водвинул.\n" +
+                "   Как труп в пустыне я лежал,\n" +
+                "   И бога глас ко мне воззвал:\n" +
+                "   «Восстань, пророк, и виждь, и внемли,\n" +
+                "   Исполнись волею моей,\n" +
+                "   И, обходя моря и земли,\n" +
+                "   Глаголом жги сердца людей».");
+
+
+        labelComplexity.setTextFill(Color.WHITE);
+        body.getChildren().add(rools);
         //Выбор класса
         classChoiseBox = new ChoiceBox<>(FXCollections.observableArrayList(firstLvl.toString(), secondLvl.toString(),thirdLvl.toString(),fourthLvl.toString()));
 
         //Кнопка пред лвл
-        prevLvl = new Button("<=");
+        prevLvl = new Button("<-");
         prevLvl.setMaxWidth(Double.MAX_VALUE);
         GridPane.setHgrow(prevLvl, Priority.ALWAYS);
         GridPane.setVgrow(prevLvl, Priority.ALWAYS);
         GridPane.setMargin(prevLvl, new Insets(8));
 
         //Кнопка след лвл
-        nextLvl = new Button("=>");
+        nextLvl = new Button("->");
         nextLvl.setMaxWidth(Double.MAX_VALUE);
         GridPane.setHgrow(nextLvl, Priority.ALWAYS);
         GridPane.setVgrow(nextLvl, Priority.ALWAYS);
@@ -265,6 +333,8 @@ class Gui {
 
 
         classChoiseBox.setOnAction(event -> {
+            body.getChildren().removeAll(rools);
+            body.getChildren().add(gameGrid);
             if(!reset.isVisible() || !prevLvl.isVisible() || !nextLvl.isVisible()){
                 if(level != 1) prevLvl.setVisible(true);
                 else prevLvl.setVisible(false);
@@ -339,8 +409,8 @@ class Gui {
 
         for(int i=0; i<levelButton.size()-1;i++){
             String file = (i+1)+"";
-            System.out.println(file);
             levelButton.get(i).setOnMouseClicked(event -> {
+                SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter,lvlView),grade,level.toString());
                 this.level = Integer.parseInt(file);
                 if(SaveMaker.isFile(file,grade)){
                     loadSaveLevel(file,grade);
@@ -380,7 +450,11 @@ class Gui {
                    items.get(list.get(i)).setActivity(true);
                 }
                 checkWin(items);
-                if(!checkWin(items))reDrawTask(items);
+                if(checkWin(items)) {
+                    loadLevelColor(levelButton,grade,counter,level);
+                    levelButton.get(levelButton.size()-1).setText("       Результат: " + score);
+                }
+                else reDrawTask(items);
             });
         }
     }
@@ -474,8 +548,7 @@ class Gui {
             color = l.get(i).getKey();
 
             score = l.get(i).getValue();
-            System.out.println(i+" "+color+" "+score);
-            this.score = this.score + score;
+            this.score +=  score;
             switch (color){
                 case 3: levelButton.get(i).setBackground(new Background(
                         new BackgroundFill(Color.DARKGREEN,new CornerRadii(1),Insets.EMPTY)));
@@ -491,6 +564,28 @@ class Gui {
 
                 default:list.get(i).setBackground(Background.EMPTY);
             }
+        }
+    }
+
+    private void loadLevelColor(List<Button> list ,Integer grade, Integer counter, Integer level){
+        Pair<Integer, Integer> l = Stats.GetColorAndScore(counter,grade-1,level-1);
+        int color = l.getKey();
+        int score = l.getValue();
+        this.score +=  score;
+        switch (color){
+            case 3: levelButton.get(level-1).setBackground(new Background(
+                    new BackgroundFill(Color.DARKGREEN,new CornerRadii(1),Insets.EMPTY)));
+                break;
+
+            case 2: list.get(level-1).setBackground(new Background(
+                    new BackgroundFill(Color.GREEN,new CornerRadii(1),Insets.EMPTY)));
+                break;
+
+            case 1: list.get(level-1).setBackground(new Background(
+                    new BackgroundFill(Color.LIGHTGREEN,new CornerRadii(1),Insets.EMPTY)));
+                break;
+
+            default:list.get(level-1).setBackground(Background.EMPTY);
         }
     }
 
