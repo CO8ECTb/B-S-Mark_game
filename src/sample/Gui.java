@@ -241,7 +241,7 @@ class Gui {
         footerCol4.setHalignment(HPos.CENTER);
         footerCol5.setHalignment(HPos.CENTER);
         footerCol6.setHalignment(HPos.CENTER);
-
+        footerGrid.setVisible(false);
         footerGrid.getColumnConstraints().addAll(footerCol0,footerCol1,footerCol2,footerCol3,footerCol4,footerCol5,footerCol6,footerCol7);
         footerGrid.getRowConstraints().add(footerRow0);
 
@@ -252,8 +252,6 @@ class Gui {
             levelNumber.setAlignment(Pos.CENTER);
             levelNumber.setTextFill(Color.WHITESMOKE);
             levelNumber.setBackground(Background.EMPTY);
-//            levelNumber.setBackground(new Background(
-//                    new BackgroundFill(Color.GREY,new CornerRadii(1),Insets.EMPTY)));
             levelNumber.setStyle("-fx-border-color: #ffffff");
             if(i == LvlGenerator.GetLvlCountByGrade(1)){
                 levelNumber.setStyle("-fx-border-color: NONE");
@@ -264,14 +262,6 @@ class Gui {
             footerGrid.add(levelNumber,i,0);
             levelButton.add(levelNumber);
         }
-
-//        levelButton.get(3).setBackground(new Background(
-//                new BackgroundFill(Color.LIGHTGREEN,new CornerRadii(1),Insets.EMPTY)));
-//
-//        levelButton.get(1).setBackground(new Background(
-//                new BackgroundFill(Color.GREEN,new CornerRadii(1),Insets.EMPTY)));
-//        levelButton.get(4).setBackground(new Background(
-//                new BackgroundFill(Color.DARKGREEN,new CornerRadii(1),Insets.EMPTY)));
 
 
         classChoiseBox.setOnAction(event -> {
@@ -287,7 +277,7 @@ class Gui {
                 nextLvl.setVisible(true);
                 reset.setVisible(true);
             }
-
+            footerGrid.setVisible(true);
             classChoiseBox.setDisable(true);
             grade = Integer.parseInt(classChoiseBox.getValue());
             gameGrid.getChildren().clear();
@@ -295,7 +285,7 @@ class Gui {
             gameGrid.getRowConstraints().clear();
 
             loadSaveLevelColor(levelButton,grade);
-
+            levelButton.get(levelButton.size()-1).setText("       Результат: " + score);
             if(SaveMaker.isFile(level.toString(),grade)){
                 loadSaveLevel(level.toString(),grade);
             } else {
@@ -303,7 +293,6 @@ class Gui {
             }
 
         });
-
 
         prevLvl.setOnAction(event -> {
             reset.setDisable(false);
@@ -346,6 +335,21 @@ class Gui {
             lvlLabel.setText(level.toString() + " уровень");
             lvlLabel.setVisible(true);
         });
+
+
+        for(int i=0; i<levelButton.size()-1;i++){
+            String file = (i+1)+"";
+            System.out.println(file);
+            levelButton.get(i).setOnMouseClicked(event -> {
+                this.level = Integer.parseInt(file);
+                if(SaveMaker.isFile(file,grade)){
+                    loadSaveLevel(file,grade);
+                } else {
+                    loadLevel(file,grade);
+                    lvlLabel.setText( level.toString()+ " уровень");
+                }
+            });
+        }
     }
 
 
@@ -466,19 +470,24 @@ class Gui {
     private void loadSaveLevelColor(List<Button> list ,Integer grade){
         List<Pair<Integer, Integer>> l = Stats.GetColorsAndScores(Stats.GetScoreForGrade(grade),grade);
         int color, score;
-        for(int i=0; i<list.size();++i) {
+        for(int i=0; i < list.size()-1; ++i) {
             color = l.get(i).getKey();
+
             score = l.get(i).getValue();
+            System.out.println(i+" "+color+" "+score);
             this.score = this.score + score;
             switch (color){
-                case 3: list.get(i).setBackground(new Background(
+                case 3: levelButton.get(i).setBackground(new Background(
                         new BackgroundFill(Color.DARKGREEN,new CornerRadii(1),Insets.EMPTY)));
+                break;
 
                 case 2: list.get(i).setBackground(new Background(
                         new BackgroundFill(Color.GREEN,new CornerRadii(1),Insets.EMPTY)));
+                break;
 
                 case 1: list.get(i).setBackground(new Background(
                         new BackgroundFill(Color.LIGHTGREEN,new CornerRadii(1),Insets.EMPTY)));
+                break;
 
                 default:list.get(i).setBackground(Background.EMPTY);
             }
