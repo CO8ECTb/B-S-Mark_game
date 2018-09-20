@@ -85,16 +85,16 @@ public class SaveMaker {
             data.add(styleValue);
         }
         catch (FileNotFoundException e) {
-            System.err.println("Такого файла не существует");
+            System.err.println("Файл " + file + " не существует");
         }
         catch (IOException e) {
-            System.out.println("Ошибка чтения файла сохранений");
+            System.out.println("Ошибка чтения файла сохранений " + file);
         }
         catch (NullPointerException e) {
-            System.err.println("Файл пустой");
+            System.err.println("Файл " + file + " пустой");
         }
         catch (RuntimeException e) {
-            System.out.println("Файл сохранений поврежден");
+            System.out.println("Файл сохранений " + file + " поврежден");
         }
 
         return data;
@@ -149,14 +149,14 @@ public class SaveMaker {
             return false;
         }
         catch (FileNotFoundException e) {
-            System.out.println("Файл сохранения не найден");
+            System.out.println("Файл " + file + " не найден");
             return false;
         }
         catch (IOException e) {
-            System.out.println("Не удалось сохранить файл");
+            System.out.println("Не удалось сохранить файл " + file);
             return false;
         }
-        System.out.println("Успешно сохранено");
+        System.out.println("Файл " + file + " успешно сохранен");
         return true;
     }
 
@@ -200,16 +200,16 @@ public class SaveMaker {
             data.remove(data.size() - 1);
         }
         catch (FileNotFoundException e) {
-            System.err.println("Такого файла не существует");
+            System.err.println("Файл " + file + " не существует");
         }
         catch (IOException e) {
-            System.out.println("Ошибка чтения файла сохранений");
+            System.out.println("Ошибка чтения файла сохранений " + file);
         }
         catch (NullPointerException e) {
-            System.err.println("Файл пустой");
+            System.err.println("Файл " + file + " пустой");
         }
         catch (RuntimeException e) {
-            System.out.println("Файл сохранений поврежден");
+            System.out.println("Файл сохранений " + file + " поврежден");
         }
 
         return data;
@@ -251,14 +251,14 @@ public class SaveMaker {
             return false;
         }
         catch (FileNotFoundException e) {
-            System.out.println("Файл сохранения не найден");
+            System.out.println("Файл " + file + " не найден");
             return false;
         }
         catch (IOException e) {
-            System.out.println("Не удалось сохранить файл");
+            System.out.println("Не удалось сохранить файл " + file);
             return false;
         }
-        System.out.println("Успешно сохранено");
+        System.out.println("Файл " + file + " успешно сохранен");
         return true;
     }
 

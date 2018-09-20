@@ -36,7 +36,7 @@ public class Stats {
         for (int j = 0; j < lvlsForThisGrade; ++j) {
             int factor = GetLvlScore(grade, j);
             int counter = GetLvlCounter(grade, j);
-            result.add(new Pair<Integer, Integer>(factor, counter));
+            result.add(new Pair<>(factor, counter));
 
             String token;
             if (factor == 0) {
@@ -57,9 +57,7 @@ public class Stats {
             if (curScore.getKey() == 0) {
                 colorsAndScores.add(new Pair<>(0, 0));
             } else {
-                int color = GetColorByScore(curScore.getValue(), grade, i);
-                int score = scores.get(i).getKey() * color;
-                colorsAndScores.add(new Pair<>(color, score));
+                colorsAndScores.add(GetColorAndScore(scores.get(i).getValue(), grade, i));
             }
         }
 
@@ -75,5 +73,12 @@ public class Stats {
             return 2;
         }
         return 1;
+    }
+
+    public static Pair<Integer, Integer> GetColorAndScore(int counter, int grade, int lvl) {
+        int factor = GetLvlDiff(grade, lvl);
+        int color = GetColorByScore(counter, grade, lvl);
+        int score = factor * color;
+        return new Pair<>(color, score);
     }
 }
