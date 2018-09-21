@@ -115,6 +115,10 @@ class Gui {
         return level;
     }
 
+    public List<Button> getLevelButton(){
+        return levelButton;
+    }
+
     public void getHelp(){
         Timer timer = new Timer();
         int nxtIdx = Helper.GetTip(items, 0);
@@ -408,10 +412,18 @@ class Gui {
 
 
         for(int i=0; i<levelButton.size()-1;i++){
-            String file = (i+1)+"";
+            String file = ""+(i+1);
             levelButton.get(i).setOnMouseClicked(event -> {
                 SaveMaker.WriteLvlInfoToFile(SaveMaker.parseElementCollection(items,counter,lvlView),grade,level.toString());
                 this.level = Integer.parseInt(file);
+                if(level <= 1){
+                    prevLvl.setVisible(false);
+                }
+                else  prevLvl.setVisible(true);
+
+                if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setVisible(false);
+                else nextLvl.setVisible(true);
+
                 if(SaveMaker.isFile(file,grade)){
                     loadSaveLevel(file,grade);
                 } else {
@@ -568,7 +580,7 @@ class Gui {
     }
 
     private void loadLevelColor(List<Button> list ,Integer grade, Integer counter, Integer level){
-        Pair<Integer, Integer> l = Stats.GetColorAndScore(counter,grade-1,level-1);
+        Pair<Integer, Integer> l = Stats.GetColorAndScore(counter,grade,level-1);
         int color = l.getKey();
         int score = l.getValue();
         this.score +=  score;
