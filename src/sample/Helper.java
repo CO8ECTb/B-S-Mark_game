@@ -206,7 +206,4 @@ public class Helper {
         return dist[cur][a.length()];
     }
 
-    public static boolean AreSameStrings(String a, String b) {
-        return CalcDist(a, b) <= LIMIT;
-    }
 }

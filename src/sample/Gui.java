@@ -181,12 +181,12 @@ class Gui {
 
                     r.getChildrenUnmodifiable().stream().
                             filter(n -> n instanceof Region).
-                            map(n -> n).
+                            map(n -> (Region) n).
                             forEach(n -> n.setBackground(Background.EMPTY));
 
                     r.getChildrenUnmodifiable().stream().
                             filter(n -> n instanceof Control).
-                            map(n -> n).
+                            map(n -> (Control) n).
                             forEach(c -> c.skinProperty().addListener(this)); // *
                 }
             }
