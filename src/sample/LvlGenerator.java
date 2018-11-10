@@ -7,10 +7,10 @@ public class LvlGenerator {
     private static final int LVLS = 7;
     private static final int SIDE_SIZE = 4;
     private static int[][] DIFF = {
-        {1, 2, 2, 2, 3, 3, 3},
-        {1, 2, 2, 3, 3, 3, 3},
-        {1, 2, 2, 3, 3, 3, 4},
-        {1, 2, 2, 3, 3, 4, 4}
+        {1, 2, 1, 2, 2, 2, 3},
+        {1, 2, 1, 2, 2,  3, 3},
+        {1, 2, 1, 2, 2, 3, 4},
+        {1, 2, 1, 2, 3, 4, 4}
     };
     private static int[][] SEEDS = {
         {42, 334, 31, 131311, 34445, 452312, 1111},

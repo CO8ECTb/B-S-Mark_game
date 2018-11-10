@@ -26,7 +26,7 @@ public class Helper {
         isInited = true;
 
         final int fieldSize = sideSize * sideSize;
-        dstSize = 1 << fieldSize;;
+        dstSize = 1 << fieldSize;
         int used[] = new int[dstSize];
         final int startState = dstSize - 1;
         used[startState] = 1;
@@ -180,5 +180,33 @@ public class Helper {
         }
 
         System.out.println("Test GetTip(): " + GetTip(d)); // 2
+    }
+
+    public static int CalcDist(String a, String b) {
+        if (a.length() > b.length()) {
+            a = a + b;
+            b = a.substring(0, (a.length() - b.length()));
+            a = a.substring(b.length());
+        }
+        // now a.length() <= b.length()
+
+        int dist[][] = new int[2][1 + a.length()];
+        int cur = 1;
+        for (int i = 0; i <= b.length(); ++i) {
+            cur ^= 1;
+            for (int j = 0; j < a.length(); ++j) {
+                if (i == 0 || j == 0) {
+                    dist[cur][j] = i > j ? i : j;
+                } else {
+                    dist[cur][j] = Math.min(dist[cur ^ 1][j - 1] + (b.charAt(i - 1) == a.charAt(j - 1) ? 1 : 0), 1 + Math.min(dist[cur][j - 1], dist[cur ^ 1][j]));
+                }
+            }
+        }
+
+        return dist[cur][a.length()];
+    }
+
+    public static boolean AreSameStrings(String a, String b) {
+        return CalcDist(a, b) <= LIMIT;
     }
 }

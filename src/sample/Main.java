@@ -18,7 +18,7 @@ public class Main extends Application {
     private Double height;
     private VBox root;
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) {
         LvlGenerator.GenAll();
 
         /*
@@ -42,7 +42,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         gui.setComponentsLook();
-        primaryStage.setTitle("BS-Mark Game");
+        primaryStage.setTitle("Флип-Флоп");
         primaryStage.show();
         scene.setOnKeyReleased(event -> {
             if(event.getCode() == KeyCode.RIGHT){
@@ -55,6 +55,7 @@ public class Main extends Application {
             }
 
             if(event.getCode() == KeyCode.F1){
+                if(gui.getLevel() < 3)
                 gui.getHelp();
             }
 

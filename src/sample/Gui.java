@@ -181,17 +181,49 @@ class Gui {
 
                     r.getChildrenUnmodifiable().stream().
                             filter(n -> n instanceof Region).
-                            map(n -> (Region) n).
+                            map(n -> n).
                             forEach(n -> n.setBackground(Background.EMPTY));
 
                     r.getChildrenUnmodifiable().stream().
                             filter(n -> n instanceof Control).
-                            map(n -> (Control) n).
+                            map(n -> n).
                             forEach(c -> c.skinProperty().addListener(this)); // *
                 }
             }
         });
 
+        rools.setText(
+                "Вы листали документы в базе данных и при открытии\n" +
+                        "очередного документа получили ошибку несоответствия\n" +
+                        "уровня своего доступа.  Для свободного чтения документов\n" +
+                        "в базе Вам необходимо получить сертификат.  В системе\n" +
+                        "предусмотрено 5 уровней проверки.\n" +
+                        "\n" +
+                        "Проверка представляет собой головоломку:\n" +
+                        "На поле 4x4 находятся элементы (рельсы или проводники из\n" +
+                        "красного камня).  Элементы могут быть или в вертикальном\n" +
+                        "или в горизонтальном положении.  При нажатии на элемент\n" +
+                        "положение всех элементов в том же столбце и той же строке\n" +
+                        "изменяется на противоположное.  Для прохождения проверки\n" +
+                        "нужно, чтобы все элементы на поле оказались в\n" +
+                        "горизонтальном положении.\n" +
+                        "\n" +
+                        "При прохождении уровня подсчитывается количество\n" +
+                        "сделанных нажатий.  Чем меньше нажатий для решения\n" +
+                        "уровня Вы сделаете, тем большее количество очков\n" +
+                        "будет засчитано.\n" +
+                        "\n" +
+                        "Между уровнями можно переключаться нажатиями на стрелки.\n" +
+                        "При переходе все сделанные на уровне действия сохраняются.\n" +
+                        "Кнопка заново перезапускает уровень.\n" +
+                        "\n" +
+                        "Для начала прохождения необходимо выбрать " +
+                        "свой класс.\n" +
+                        "\n" +
+                        "Желаем Вам удачи!"
+        );
+
+        /*
         rools.setText("Тут должны быть правила, но, раз уж их нет,\n" +
                 " то тут будет стихотворение!\n \n " +
                 "   Духовной жаждою томим,\n" +
@@ -224,7 +256,7 @@ class Gui {
                 "   Исполнись волею моей,\n" +
                 "   И, обходя моря и земли,\n" +
                 "   Глаголом жги сердца людей».");
-
+        */
 
         labelComplexity.setTextFill(Color.WHITE);
         body.getChildren().add(rools);
@@ -258,7 +290,7 @@ class Gui {
         counterLabel.setAlignment(Pos.CENTER_RIGHT);
         counterLabel.setFont(Font.loadFont(Main.class.getResourceAsStream("/resources/minecraft-font.ttf"),counterSize));
         counterLabel.setTextFill(Color.WHITE);
-        buttonsGrid.setHalignment(counterLabel, HPos.RIGHT);
+        GridPane.setHalignment(counterLabel, HPos.RIGHT);
 
         ColumnConstraints controlCol0 = new ColumnConstraints();
         ColumnConstraints controlCol1 = new ColumnConstraints();
@@ -346,7 +378,7 @@ class Gui {
                 if(level < LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setVisible(true);
                 else nextLvl.setVisible(false);
 
-                lvlLabel.setText(level.toString() + " уровень");
+                lvlLabel.setText(GetLvlLabel(level));
                 lvlLabel.setVisible(true);
                 nextLvl.setVisible(true);
                 reset.setVisible(true);
@@ -380,7 +412,7 @@ class Gui {
             if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setVisible(false);
             else nextLvl.setVisible(true);
 
-            lvlLabel.setText(level.toString() + " уровень");
+            lvlLabel.setText(GetLvlLabel(level));
             lvlLabel.setVisible(true);
             if(SaveMaker.isFile(level.toString(),grade)){
                 loadSaveLevel(level.toString(),grade);
@@ -397,7 +429,7 @@ class Gui {
             if(level > 1) prevLvl.setVisible(true);
             if(level >= LvlGenerator.GetLvlCountByGrade(level)) nextLvl.setVisible(false);
 
-            lvlLabel.setText(level.toString() + " уровень");
+            lvlLabel.setText(GetLvlLabel(level));
             lvlLabel.setVisible(true);
             if(SaveMaker.isFile(level.toString(),grade)){
                 loadSaveLevel(level.toString(),grade);
@@ -406,7 +438,7 @@ class Gui {
 
         reset.setOnAction(event -> {
             loadLevel(level.toString(),grade);
-            lvlLabel.setText(level.toString() + " уровень");
+            lvlLabel.setText(GetLvlLabel(level));
             lvlLabel.setVisible(true);
         });
 
@@ -428,7 +460,7 @@ class Gui {
                     loadSaveLevel(file,grade);
                 } else {
                     loadLevel(file,grade);
-                    lvlLabel.setText( level.toString()+ " уровень");
+                    lvlLabel.setText(GetLvlLabel(level));
                 }
             });
         }
@@ -481,7 +513,11 @@ class Gui {
             element.getButton().setDisable(true);
             updateElementsSize(element);
         }
-        lvlLabel.setText(level + " уровень пройден");
+        if (level > 2) {
+            lvlLabel.setText(GetLvlLabel(level) + " пройден");
+        } else {
+            lvlLabel.setText(GetLvlLabel(level));
+        }
         reset.setDisable(true);
         return true;
     }
@@ -549,7 +585,9 @@ class Gui {
 //        }
         drawTask(SaveMaker.parseCollection(SaveMaker.ReadLvlInfoFromFile(level.toString(),grade),dimension),dimension);
         checkWin(items);
-        if(!checkWin(items)) lvlLabel.setText(level + " уровень");
+        if(!checkWin(items)) {
+            lvlLabel.setText(GetLvlLabel(level));
+        }
     }
 
 
@@ -574,7 +612,8 @@ class Gui {
                         new BackgroundFill(Color.LIGHTGREEN,new CornerRadii(1),Insets.EMPTY)));
                 break;
 
-                default:list.get(i).setBackground(Background.EMPTY);
+                default:list.get(i).setBackground(new Background(
+                        new BackgroundFill(Color.GREY,new CornerRadii(1),Insets.EMPTY)));
             }
         }
     }
@@ -645,6 +684,13 @@ class Gui {
             updateElementsSize(el);
             gameGrid.add(el.getImageButton(),el.getColumn(),el.getRow());
         }
+    }
+
+    private String GetLvlLabel(int level) {
+        String result = "Пример (нажмите F1)";
+        if (level == 2) result = "Еще пример";
+        if (level > 2) result = (level - 2) + " уровень";
+        return result;
     }
 
 }

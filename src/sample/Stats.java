@@ -76,7 +76,7 @@ public class Stats {
     }
 
     public static Pair<Integer, Integer> GetColorAndScore(int counter, int grade, int lvl) {
-        int factor = GetLvlDiff(grade, lvl);
+        int factor = GetLvlDiff(grade - 1, lvl);
         int color = GetColorByScore(counter, grade, lvl);
         int score = factor * color;
         return new Pair<>(color, score);
